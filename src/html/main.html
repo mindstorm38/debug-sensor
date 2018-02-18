@@ -47,7 +47,36 @@
 
 		<div class="ds-separator" data-direction="v"></div>
 
-		<div class="ds-paquet">
+		<div class="ds-packet">
+
+			<div class="ds-diagram">
+
+				<!-- <div class="ds-sof">0xFF</div> -->
+
+				<!-- <div class="ds-eof">0xFF</div> -->
+
+			</div>
+
+			<div class="ds-part-edit">
+
+				<svg class="ds-lines" width="10" height="31">
+					<line class="ds-left" x1="0" x2="0" y1="0" y2="0" stroke-dasharray="2,2" stroke-width="1"/>
+					<line class="ds-right" x1="0" x2="0" y1="0" y2="0" stroke-dasharray="2,2" stroke-width="1"/>
+				</svg>
+
+				<div class="ds-label">Packet identifier</div>
+				<input type="text" class="ds-input" placeholder="Packet identifier" id="ds-packet-part-edit-identifier" />
+
+				<div class="ds-margin"></div>
+
+				<div class="ds-label">Packet part type</div>
+				<select class="ds-select" id="ds-packet-part-edit-type"></select>
+
+				<div class="ds-margin"></div>
+
+				<button class="ds-button" id="ds-packet-part-edit-close">Close</button>
+
+			</div>
 
 		</div>
 
