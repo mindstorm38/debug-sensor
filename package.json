@@ -4,18 +4,21 @@
   "description": "Debug sensor",
   "main": "src/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "electron .",
+    "install": "electron-rebuild"
   },
   "keywords": [
     "debug",
-	"sensor"
+    "sensor"
   ],
   "author": "Mindstorm",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^1.8.2"
+    "electron": "^1.7.3",
+    "electron-rebuild": "^1.7.3"
   },
   "dependencies": {
+    "jquery": "^3.3.1",
     "serialport": "^6.0.5"
   }
 }

@@ -1,3 +1,9 @@
+// out: ./main.css, sourcemap: true, compress: true
+
+// Constants
+@background-color: #ffffff;
+@separator-color: #cacaca;
+
 // Main
 html, body {
 
@@ -9,12 +15,130 @@ html, body {
 body {
 
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
 	margin: 0;
 	padding: 0;
-	background-image: url(bg.png);
-	background-position: top;
-	background-size: cover;
 	font-family: sans-serif;
+	background-color: @background-color;
+
+}
+
+* {
+	outline: 0;
+}
+
+// Serial
+div.ds-serial {
+
+	display: block;
+	width: 300px;
+	padding: 20px 0;
+
+	div.ds-title {
+
+		display: block;
+		text-align: center;
+		font-size: 15px;
+		color: #121212;
+
+	}
+
+	div.ds-label {
+
+		display: block;
+		text-align: center;
+		font-size: 11px;
+		margin-bottom: 3px;
+		color: #515151;
+
+	}
+
+	div.ds-margin {
+		display: block;
+		height: 20px;
+	}
+
+	select.ds-select {
+
+		display: block;
+		width: 200px;
+		margin: 0 auto;
+		background-color: #e1e1e1;
+	    padding: 3px 5px;
+		border: 1px solid #cccccc;
+		border-radius: 1px;
+		color: #313131;
+		transition: background-color .2s, border-color .2;
+
+	}
+
+	select.ds-select:hover {
+		background-color: #e9e9e9;
+	}
+
+	select.ds-select:focus {
+		background-color: #ffffff;
+	}
+
+	select.ds-select.ds-disabled {
+
+		color: #707070;
+		pointer-events: none;
+
+	}
+
+	button.ds-button {
+
+		display: block;
+		-webkit-appearance: none;
+		background-color: #ffffff;
+		padding: 5px 8px;
+		font-size: 12px;
+		border: 1px solid #187feb;
+		border-radius: 1px;
+		margin: 0 auto;
+		cursor: pointer;
+		color: #187feb;
+		transition: color .2s, background-color .2s;
+
+	}
+
+	button.ds-button:hover {
+
+		background-color: #187feb;
+		color: #ffffff;
+
+	}
+
+	button.ds-button.ds-disabled {
+
+		background-color: #e5e5e5;
+		color: #535353;
+		border-color: #b2b2b2;
+		pointer-events: none;
+
+	}
+
+}
+
+// Separator
+div.ds-separator {
+
+	display: block;
+	background: @separator-color;
+
+}
+div.ds-separator[data-direction="h"] {
+	height: 1px;
+}
+div.ds-separator[data-direction="v"] {
+	width: 1px;
+}
+
+// Paquet
+div.ds-paquet {
+
+	display: block;
+	flex: 1 1 0;
 
 }

@@ -17,8 +17,8 @@ let mainWindow = null;
 function createWindow() {
 
 	mainWindow = new BrowserWindow( {
-		width: 640,
-		height: 360,
+		width: 1280,
+		height: 720,
 		title: "Debug Sensor",
 		maximized: false,
 		center: true

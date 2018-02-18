@@ -3,13 +3,53 @@
 
 	<head>
 
-		<meta charset="UTF-8" />
+		<meta charset="utf-8" />
+
+		<link rel="stylesheet" href="../main.css" />
+
+		<script type="application/javascript">
+
+			document.addEventListener( "DOMContentLoaded", () => {
+				window.ds = require("../renderer");
+			} );
+
+		</script>
 
 	</head>
 
 	<body>
 
+		<div class="ds-serial">
 
+			<div class="ds-title">Serial Connection</div>
+
+			<div class="ds-margin"></div>
+
+			<div class="ds-label">Baudrate</div>
+			<select class="ds-select" id="ds-serial-baudrate">
+				<option value="9600">9600</option>
+				<option value="19200">19200</option>
+				<option value="38400">38400</option>
+				<option value="57600">57600</option>
+				<option value="115200" selected="selected">115200</option>
+			</select>
+
+			<div class="ds-margin"></div>
+
+			<div class="ds-label">Port</div>
+			<select class="ds-select" id="ds-serial-port"></select>
+
+			<div class="ds-margin"></div>
+
+			<button class="ds-button" id="ds-serial-connect">Connection</button>
+
+		</div>
+
+		<div class="ds-separator" data-direction="v"></div>
+
+		<div class="ds-paquet">
+
+		</div>
 
 	</body>
 

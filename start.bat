@@ -1,2 +1,2 @@
-electron .
+npm start
 PAUSE
