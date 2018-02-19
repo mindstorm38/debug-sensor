@@ -6,8 +6,9 @@
 @diagram-height: 100px;
 @diagram-frame-limit-width: 40px;
 @diagram-border-color: #cecece;
-
+@diagram-edit-part-space-height: 40px;
 @fields-color-blue: #187feb;
+@remove-color: #ff4f4f;
 
 // Main
 html, body {
@@ -143,6 +144,15 @@ div.ds-serial {
 
 	}
 
+	div.ds-serial-connected {
+
+		text-align: center;
+		font-size: 11px;
+		color: #5fcc00;
+		margin: 10px auto;
+
+	}
+
 }
 
 // Fields labels
@@ -196,6 +206,7 @@ div.ds-packet {
 	display: block;
 	flex: 1 1 0;
 	padding: @diagram-frame-limit-width + 20px;
+	user-select: none;
 
 	div.ds-diagram {
 
@@ -205,7 +216,7 @@ div.ds-packet {
 		width: 70%;
 		min-width: 300px;
 		height: @diagram-height;
-		margin: 30px auto;
+		margin: @diagram-edit-part-space-height auto;
 		border: 1px solid @diagram-border-color;
 
 		div.ds-sof,
@@ -247,14 +258,17 @@ div.ds-packet {
 				position: absolute;
 				font-size: 11px;
 				color: #515151;
-				top: 50%;
-				left: 50%;
-				max-width: 100%;
-				transform: translate( -50%, -50% );
 				text-align: center;
 				white-space: nowrap;
 				overflow: hidden;
 				text-overflow: ellipsis;
+				padding: 0 10px;
+				line-height: 1.1em;
+				height: 1.1em;
+				max-width: 100%;
+				top: 50%;
+				left: 50%;
+				transform: translate( -50%, -50% );
 
 			}
 
@@ -285,19 +299,13 @@ div.ds-packet {
 
 				}
 				div.ds-size {
-					top: -15px;
+					top: -16px;
 				}
 				div.ds-type {
-					top: -28px;
+					top: -30px;
 				}
 
 			}
-
-		}
-
-		div.ds-part:last-child {
-
-			border-right: none;
 
 		}
 
@@ -308,12 +316,33 @@ div.ds-packet {
 
 		}
 
+		div.ds-add {
+
+			display: block;
+			width: 20px;
+			text-align: center;
+			line-height: 100px;
+			font-size: 11px;
+			cursor: pointer;
+			color: #54be15;
+			transition: color .2s, background-color .2s, flex .4s;
+
+		}
+
+		div.ds-add:hover {
+
+			color: #54be15;
+			background-color: #f3ffec;
+
+		}
+
 	}
 
 	div.ds-part-edit {
 
 		display: block;
-		// display: none;
+		position: relative;
+		pointer-events: none;
 		border: 1px dashed @separator-color;
 		padding: 30px;
 		margin: 0 auto;
@@ -325,8 +354,35 @@ div.ds-packet {
 
 			position: absolute;
 			left: -1px;
-			top: -31px;
+			top: -@diagram-edit-part-space-height - 1px;
 			stroke: @separator-color;
+
+		}
+
+		div.ds-close {
+
+			display: block;
+			position: absolute;
+			right: 10px;
+			top: 10px;
+			width: 20px;
+			height: 20px;
+			line-height: 19px;
+			cursor: pointer;
+			text-align: center;
+			border: 1px solid @remove-color;
+			border-radius: 1px;
+			font-size: 13px;
+			color: @remove-color;
+			background-color: #ffffff;
+			transition: background-color .2s, color .2s;
+
+		}
+
+		div.ds-close:hover {
+
+			color: #ffffff;
+			background-color: @remove-color;
 
 		}
 
@@ -334,7 +390,7 @@ div.ds-packet {
 
 	div.ds-part-edit.ds-active {
 
-		// display: block;
+		pointer-events: all;
 		opacity: 1;
 		transform: translate( 0, 0 ) scale( 1 );
 

@@ -7,9 +7,11 @@ const path = require('path');
 const electron = require('electron');
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
+const ipc = electron.ipcMain;
 
 // - Working directory
 const workingDirectory = path.join( __dirname );
+const rendererDirectory = path.join( workingDirectory, "renderer" );
 
 // - Main window
 let mainWindow = null;
@@ -20,11 +22,11 @@ function createWindow() {
 		width: 1280,
 		height: 720,
 		title: "Debug Sensor",
-		maximized: false,
+		maximized: true,
 		center: true
 	} );
 
-	mainWindow.loadURL( "file://" + path.join( workingDirectory, "html", "main.html" ) )
+	mainWindow.loadURL( "file://" + path.join( rendererDirectory, "main.html" ) )
 
 	mainWindow.on( 'closed', () => {
 

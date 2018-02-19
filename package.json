@@ -14,8 +14,8 @@
   "author": "Mindstorm",
   "license": "Apache License 2.0",
   "repository": {
-	  "type": "git",
-	  "url": "https://github.com/mindstorm38/debug-sensor.git"
+    "type": "git",
+    "url": "https://github.com/mindstorm38/debug-sensor.git"
   },
   "devDependencies": {
     "electron": "^1.7.3",
@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "jquery": "^3.3.1",
+    "jsonfile": "^4.0.0",
     "serialport": "^6.0.5"
   }
 }

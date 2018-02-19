@@ -5,12 +5,12 @@
 
 		<meta charset="utf-8" />
 
-		<link rel="stylesheet" href="../main.css" />
+		<link rel="stylesheet" href="./main.css" />
 
 		<script type="application/javascript">
 
 			document.addEventListener( "DOMContentLoaded", () => {
-				window.ds = require("../renderer");
+				window.ds = require("./renderer");
 			} );
 
 		</script>
@@ -23,25 +23,25 @@
 
 			<div class="ds-title">Serial Connection</div>
 
-			<div class="ds-margin"></div>
+			<div class="ds-serial-connection">
 
-			<div class="ds-label">Baudrate</div>
-			<select class="ds-select" id="ds-serial-baudrate">
-				<option value="9600">9600</option>
-				<option value="19200">19200</option>
-				<option value="38400">38400</option>
-				<option value="57600">57600</option>
-				<option value="115200" selected="selected">115200</option>
-			</select>
+				<div class="ds-margin"></div>
 
-			<div class="ds-margin"></div>
+				<div class="ds-label">Port</div>
+				<select class="ds-select" id="ds-serial-port"></select>
 
-			<div class="ds-label">Port</div>
-			<select class="ds-select" id="ds-serial-port"></select>
+				<div class="ds-margin"></div>
 
-			<div class="ds-margin"></div>
+				<div class="ds-label">Baudrate</div>
+				<select class="ds-select" id="ds-serial-baudrate"></select>
 
-			<button class="ds-button" id="ds-serial-connect">Connection</button>
+				<div class="ds-margin"></div>
+
+			</div>
+
+			<div class="ds-serial-connected">Connected</div>
+
+			<button class="ds-button" id="ds-serial-connect"></button>
 
 		</div>
 
@@ -59,10 +59,12 @@
 
 			<div class="ds-part-edit">
 
-				<svg class="ds-lines" width="10" height="31">
+				<svg class="ds-lines" width="10" height="41">
 					<line class="ds-left" x1="0" x2="0" y1="0" y2="0" stroke-dasharray="2,2" stroke-width="1"/>
 					<line class="ds-right" x1="0" x2="0" y1="0" y2="0" stroke-dasharray="2,2" stroke-width="1"/>
 				</svg>
+
+				<div class="ds-close" title="Close">&times;</div>
 
 				<div class="ds-label">Packet identifier</div>
 				<input type="text" class="ds-input" placeholder="Packet identifier" id="ds-packet-part-edit-identifier" />
@@ -74,7 +76,7 @@
 
 				<div class="ds-margin"></div>
 
-				<button class="ds-button" id="ds-packet-part-edit-close">Close</button>
+				<button class="ds-button" id="ds-packet-part-edit-remove">Remove</button>
 
 			</div>
 
