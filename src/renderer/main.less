@@ -1,21 +1,32 @@
 // out: ./main.css, sourcemap: true, compress: true
 
-// Constants
-@background-color: #ffffff;
-@separator-color: #cacaca;
-@diagram-height: 100px;
-@diagram-frame-limit-width: 40px;
-@diagram-border-color: #cecece;
-@diagram-edit-part-space-height: 40px;
-@fields-color-blue: #187feb;
-@remove-color: #ff4f4f;
+// Fields
+@packet-diagram-height: 100px;
+@packet-diagram-color: #c7c7c7;
+@packet-diagram-min-width: 400px;
+@packet-diagram-width: 70%;
+@packet-diagram-margin-top: 30px;
+@packet-diagram-margin-bottom: 40px;
+@packet-diagram-frame-limits-height: 60px;
+@packet-diagram-frame-limits-width: 60px;
+@packet-padding-x: 100px;
+@packet-padding-y: 40px;
+@field-height: 30px;
+@field-font-size: 13px;
+@field-margin: 4px;
+@info-color: #187feb;
+@danger-color: #ff6363;
 
-// Main
+// Presets
+.field-block {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+// Page
 html, body {
-
-	min-height: 200px;
 	height: 100%;
-
 }
 
 body {
@@ -24,375 +35,376 @@ body {
 	flex-direction: row;
 	margin: 0;
 	padding: 0;
+	min-width: @packet-diagram-min-width + ( @packet-padding-x * 2 );
 	font-family: sans-serif;
-	background-color: @background-color;
 
 }
 
-* {
-	outline: 0;
+*,
+*::before,
+*::after {
 	box-sizing: border-box;
+	outline: none;
 }
 
-// Button element
-button.ds-button {
+// Button
+button.button {
 
-	display: block;
-	-webkit-appearance: none;
-	background-color: #ffffff;
-	padding: 5px 8px;
-	font-size: 12px;
-	border: 1px solid @fields-color-blue;
-	border-radius: 1px;
-	margin: 0 auto;
+	display: inline-block;
+	color: #000;
+	border: 1px solid #000;
+	border-radius: 2px;
+	background-color: #fff;
 	cursor: pointer;
-	color: @fields-color-blue;
+	height: @field-height;
+	line-height: @field-height - 2px;
+	padding: 0 10px;
+	font-size: @field-font-size;
+	margin: @field-margin;
 	transition: color .2s, background-color .2s;
 
 }
 
-button.ds-button:hover {
-
-	background-color: @fields-color-blue;
-	color: #ffffff;
-
+button.button.block {
+	.field-block();
 }
 
-button.ds-button.ds-disabled {
+button.button.info {
+	border-color: @info-color;
+	color: @info-color;
+}
+button.button.danger {
+	border-color: @danger-color;
+	color: @danger-color;
+}
 
-	background-color: #e5e5e5;
-	color: #535353;
-	border-color: #b2b2b2;
+button.button:hover {
+	color: #fff;
+	background-color: #000;
+}
+button.button.info:hover {
+	background-color: @info-color;
+}
+button.button.danger:hover {
+	background-color: @danger-color;
+}
+
+button.button.disabled {
+	background-color: #e8e8e8;
+	color: #9e9e9e;
+	border-color: #b3b3b3;
 	pointer-events: none;
+}
+
+// Input
+input.input {
+
+	display: inline-block;
+	border: 1px solid #afafaf;
+	border-radius: 2px;
+	padding: 0;
+	height: @field-height;
+	line-height: @field-height - 2px;
+	font-size: @field-font-size;
+	padding: 0 10px;
+    width: 160px;
+	color: #636363;
+	margin: @field-margin;
+	transition: color .2s, border-color .2s;
 
 }
 
-// Select element
-select.ds-select {
+input.input.block {
+	.field-block();
+}
+
+input.input:hover,
+input.input:focus {
+	color: #343434;
+}
+
+input.input:focus {
+	border-color: @info-color;
+}
+
+// Select
+select.select {
+
+	display: inline-block;
+	border: 1px solid #afafaf;
+	border-radius: 2px;
+	height: @field-height;
+	line-height: @field-height - 2px;
+	font-size: @field-font-size;
+	background-color: #f1f1f1;
+	color: #5b5956;
+	padding: 0 4px;
+	margin: @field-margin;
+	transition: color .2s, background-color .2s, border-color .2s;
+
+}
+
+select.select.block {
+	.field-block();
+}
+
+select.select:hover,
+select.select:focus {
+	background-color: #fff;
+}
+
+select.select:focus {
+	border-color: @info-color;
+}
+
+select.select.disabled {
+	background-color: #e8e8e8;
+	color: #9e9e9e;
+	border-color: #b3b3b3;
+	pointer-events: none;
+}
+
+// Margin
+div.margin {
 
 	display: block;
-	width: 200px;
-	margin: 0 auto;
-	background-color: #e1e1e1;
-    padding: 5px 8px;
-	border: 1px solid #cccccc;
-	border-radius: 1px;
+	height: 10px;
+
+}
+
+// Label
+div.label {
+
+	display: block;
 	font-size: 11px;
-	color: #313131;
-	transition: background-color .2s, border-color .2s;
-
-}
-
-select.ds-select:hover {
-	background-color: #e9e9e9;
-}
-
-select.ds-select:focus {
-	background-color: #ffffff;
-}
-
-select.ds-select.ds-disabled {
-
-	color: #707070;
-	pointer-events: none;
-
-}
-
-// Input element
-input.ds-input {
-
-	display: block;
-	color: #767676;
-	margin: 0 auto;
-	padding: 5px 8px;
-	font-size: 12px;
-	border: 1px solid #cccccc;
-	border-radius: 1px;
 	text-align: center;
-	background-color: #fbfbfb;
-	transition: color .2s,background-color .2s,border-color .2s;
+	color: #5d5d5d;
 
 }
 
-input.ds-input:hover,
-input.ds-input:focus {
-
-	background-color: #ffffff;
-
-}
-
-input.ds-input:focus {
-
-	border-color: @fields-color-blue;
-	color: #4d4d4d;
-
-}
-
-// Serial
-div.ds-serial {
+// Side
+div.side {
 
 	display: block;
 	width: 300px;
-	padding: 20px 0;
+	border-right: 1px solid #cccccc;
 
-	div.ds-title {
+	div.serial {
 
 		display: block;
-		text-align: center;
-		font-size: 15px;
-		color: #121212;
-
-	}
-
-	div.ds-serial-connected {
-
-		text-align: center;
-		font-size: 11px;
-		color: #5fcc00;
-		margin: 10px auto;
+		padding: 20px;
 
 	}
 
 }
 
-// Fields labels
-div.ds-label {
+// Packet
+div.packet {
 
 	display: block;
-	text-align: center;
-	font-size: 11px;
-	margin-bottom: 3px;
-	color: #515151;
+	flex: 1 0 0;
+	width: 100%;
+	height: 100%;
+	padding: @packet-padding-y @packet-padding-x;
 
-}
-
-// Invisible margin
-div.ds-margin {
-	display: block;
-	height: 20px;
-}
-
-// Separator
-div.ds-separator {
-
-	display: block;
-	background: @separator-color;
-
-}
-div.ds-separator[data-direction="h"] {
-	height: 1px;
-}
-div.ds-separator[data-direction="v"] {
-	width: 1px;
-}
-
-// Columns
-div.ds-row {
-
-	display: flex;
-	flex-direction: row;
-
-	div.ds-columns {
-
-		flex: 1 1 0;
-
-	}
-
-}
-
-// Paquet
-div.ds-packet {
-
-	display: block;
-	flex: 1 1 0;
-	padding: @diagram-frame-limit-width + 20px;
-	user-select: none;
-
-	div.ds-diagram {
+	div.diagram {
 
 		position: relative;
 		display: flex;
 		flex-direction: row;
-		width: 70%;
-		min-width: 300px;
-		height: @diagram-height;
-		margin: @diagram-edit-part-space-height auto;
-		border: 1px solid @diagram-border-color;
+		width: @packet-diagram-width;
+		min-width: @packet-diagram-min-width;
+		height: @packet-diagram-height;
+		margin-left: auto;
+		margin-right: auto;
+		margin-top: @packet-diagram-margin-top;
+		margin-bottom: @packet-diagram-margin-bottom;
+		border: 1px solid @packet-diagram-color;
+		border-radius: 2px;
 
-		div.ds-sof,
-		div.ds-eof {
-
-			position: absolute;
-			display: block;
-			height: @diagram-height;
-			width: @diagram-frame-limit-width;
-			border: 1px solid @diagram-border-color;
-			top: -1px;
-			line-height: @diagram-height;
-			font-size: 11px;
-			text-align: center;
-			color: #7d7d7d;
-
-		}
-		div.ds-sof {
-			left: -@diagram-frame-limit-width;
-			border-right: none;
-		}
-		div.ds-eof {
-			right: -@diagram-frame-limit-width;
-			border-left: none;
-		}
-
-		div.ds-part {
+		div.segment {
 
 			display: block;
 			position: relative;
-			border-right: 1px dashed @diagram-border-color;
-			background-color: transparent;
-			transition: background-color .2s, flex .2s;
 			cursor: pointer;
+			opacity: 1;
+			border-right: 1px dashed @packet-diagram-color;
+			background-color: transparent;
+			transition: background-color .2s, flex .2s, opacity .2s;
 
-			div.ds-identifier {
+			div.name {
 
 				display: block;
 				position: absolute;
-				font-size: 11px;
-				color: #515151;
-				text-align: center;
-				white-space: nowrap;
-				overflow: hidden;
-				text-overflow: ellipsis;
-				padding: 0 10px;
-				line-height: 1.1em;
-				height: 1.1em;
-				max-width: 100%;
 				top: 50%;
 				left: 50%;
 				transform: translate( -50%, -50% );
+				font-size: 11px;
+				color: #1b1b1b;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+				overflow: hidden;
+				max-width: 80%;
+				line-height: 2em;
 
 			}
 
-			div.ds-rule {
+			div.rule {
 
 				display: block;
 				position: absolute;
+				left: 0;
+				top: -10px;
 				width: 100%;
 				height: 6px;
-				top: -11px;
-				border: 1px solid #499aef;
-				border-bottom: none;
+				border: 1px solid #0095ff;
 				border-top-left-radius: 2px;
 				border-top-right-radius: 2px;
+				border-bottom: none;
 
-				div.ds-size,
-				div.ds-type {
+				div.size {
 
 					display: block;
 					position: absolute;
-					font-size: 11px;
-					color: #5d5d5d;
-					width: 100%;
 					text-align: center;
-					white-space: nowrap;
-					overflow: hidden;
-					text-overflow: ellipsis;
+					width: 100%;
+					font-size: 9px;
+					line-height: 10px;
+					top: -12px;
+					color: #6c6c6c;
 
-				}
-				div.ds-size {
-					top: -16px;
-				}
-				div.ds-type {
-					top: -30px;
 				}
 
 			}
 
 		}
 
-		div.ds-part:hover,
-		div.ds-part.ds-active {
+		div.segment:hover,
+		div.segment.active {
 
-			background-color: #f9f9f9;
+			background-color: #f6f6f6;
 
 		}
 
-		div.ds-add {
+		div.add {
 
 			display: block;
-			width: 20px;
 			text-align: center;
-			line-height: 100px;
-			font-size: 11px;
+			line-height: @packet-diagram-height - 2px;
 			cursor: pointer;
-			color: #54be15;
-			transition: color .2s, background-color .2s, flex .4s;
+			color: #18b90a;
+			font-size: 13px;
+			background-color: #fff;
+			width: 20px;
+			transition: background-color .2s, width .2s, flex .2s;
 
 		}
 
-		div.ds-add:hover {
+		div.add:hover {
 
-			color: #54be15;
-			background-color: #f3ffec;
+			background-color: #f4fff3;
+
+		}
+
+		div.sof,
+		div.eof {
+
+			display: block;
+			position: absolute;
+			width: @packet-diagram-frame-limits-width;
+			top: ( @packet-diagram-height - @packet-diagram-frame-limits-height ) / 2 - 2px;
+			height: @packet-diagram-frame-limits-height;
+			border: 1px solid @packet-diagram-color;
+
+			input {
+
+				display: block;
+				position: absolute;
+				width: 40px;
+				background-color: rgba(0,0,0,0);
+				border: 1px solid transparent;
+				border-radius: 2px;
+				font-size: 11px;
+				text-align: left;
+				height: 20px;
+				line-height: 18px;
+				top: 20px;
+				left: 10px;
+				color: #8c8c8c;
+				font-family: monospace;
+				padding: 0;
+				padding-left: 20px;
+				padding-right: 2px;
+				transition: background-color .2s,border-color .2s,color .2s;
+
+			}
+
+			input:hover,
+			input:focus {
+
+				color: #424242;
+				border-color: #d6d6d6;
+
+			}
+
+			span {
+
+				display: block;
+				position: absolute;
+				height: 20px;
+				top: 20px;
+				left: 16px;
+				font-size: 11px;
+				line-height: 20px;
+				font-family: monospace;
+				color: #8c8c8c;
+
+			}
+
+		}
+
+		div.sof {
+
+			left: -@packet-diagram-frame-limits-width - 1px;
+			border-right: none;
+
+		}
+
+		div.eof {
+
+			right: -@packet-diagram-frame-limits-width - 1px;
+			border-left: none;
 
 		}
 
 	}
 
-	div.ds-part-edit {
+	div.edit-segment {
 
 		display: block;
 		position: relative;
-		pointer-events: none;
-		border: 1px dashed @separator-color;
-		padding: 30px;
-		margin: 0 auto;
+		transform: translate( 0, -100% ) scale( 0 );
 		opacity: 0;
-		transform: translate( 0, -50% ) scale( 0.1 );
-		transition: opacity .2s, transform .4s;
+		transition: transform .4s,opacity .1s;
+		border: 1px dashed #cecccc;
+		padding: 10px 20px;
+		text-align: center;
+		font-size: 0;
 
-		svg.ds-lines {
-
-			position: absolute;
-			left: -1px;
-			top: -@diagram-edit-part-space-height - 1px;
-			stroke: @separator-color;
-
-		}
-
-		div.ds-close {
+		svg.lines {
 
 			display: block;
 			position: absolute;
-			right: 10px;
-			top: 10px;
-			width: 20px;
-			height: 20px;
-			line-height: 19px;
-			cursor: pointer;
-			text-align: center;
-			border: 1px solid @remove-color;
-			border-radius: 1px;
-			font-size: 13px;
-			color: @remove-color;
-			background-color: #ffffff;
-			transition: background-color .2s, color .2s;
-
-		}
-
-		div.ds-close:hover {
-
-			color: #ffffff;
-			background-color: @remove-color;
+			stroke: @packet-diagram-color;
 
 		}
 
 	}
 
-	div.ds-part-edit.ds-active {
+	div.edit-segment.active {
 
-		pointer-events: all;
-		opacity: 1;
 		transform: translate( 0, 0 ) scale( 1 );
+		opacity: 1;
 
 	}
 

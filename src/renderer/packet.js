@@ -1,328 +1,334 @@
-/**
- * Renderer paquet manager
- */
+// Packet diagram renderer script
 
-const Type = require('../type').Type;
-const utils = require('../utils');
-const $ = require('jquery');
-const jsonfile = require('jsonfile');
+// Requires
+const electron = require('electron');
+const ipc = electron.ipcRenderer;
+const utils = require('../common/utils');
+const packet = require('../common/packet');
+const Type = packet.Type;
+const Packet = packet.Packet;
 
-// Packet elements and events
-const packetDiv = document.querySelector('div.ds-packet');
-const packetPartEditDiv = packetDiv.querySelector('div.ds-part-edit');
-const packetPartEditLinesSvg = packetPartEditDiv.querySelector('svg.ds-lines');
-const packetPartEditLinesSvgLeftLine = packetPartEditLinesSvg.querySelector('line.ds-left');
-const packetPartEditLinesSvgRightLine = packetPartEditLinesSvg.querySelector('line.ds-right');
-const packetPartEditIdentifierInput = packetPartEditDiv.querySelector('input#ds-packet-part-edit-identifier');
-const packetPartEditTypeSelect = packetPartEditDiv.querySelector('select#ds-packet-part-edit-type');
-const packetPartEditCloseButton = packetPartEditDiv.querySelector('div.ds-close');
-const packetPartEditRemoveButton = packetPartEditDiv.querySelector('button#ds-packet-part-edit-remove');
+// Elements
+const packetElement = document.querySelector('div.packet');
+const packetDiagramElement = packetElement.querySelector('div.diagram');
+const packetDiagramAddElement = packetDiagramElement.querySelector('div.add');
+// const packetDiagramSofElement = packetDiagramElement.querySelector('div.sof');
+// const packetDiagramEofElement = packetDiagramElement.querySelector('div.eof');
+const packetEditSegmentElement = packetElement.querySelector('div.edit-segment');
+const packetEditSegmentIdentifierElement = packetEditSegmentElement.querySelector('input#packet-edit-segment-identifier');
+const packetEditSegmentTypeElement = packetEditSegmentElement.querySelector('select#packet-edit-segment-type');
+const packetEditSegmentRemoveElement = packetEditSegmentElement.querySelector('button#packet-edit-segment-remove');
+const packetEditSegmentCloseElement = packetEditSegmentElement.querySelector('button#packet-edit-segment-close');
+const packetEditSegmentLinesElement = packetEditSegmentElement.querySelector('svg.lines');
+const packetEditSegmentLineLeftElement = packetEditSegmentLinesElement.querySelector('line.left');
+const packetEditSegmentLineRightElement = packetEditSegmentLinesElement.querySelector('line.right');
 
-packetPartEditIdentifierInput.addEventListener( 'keyup', () => {
-	applyEditPacketPartIdentifier();
+packetDiagramAddElement.addEventListener( 'click', () => {
+	requestNewSegment();
 } );
 
-packetPartEditTypeSelect.addEventListener( 'change', () => {
-	applyEditPacketPartType();
+packetEditSegmentIdentifierElement.addEventListener( 'keyup', () => {
+	applyEditingSegmentIdentifier();
 } );
 
-packetPartEditCloseButton.addEventListener( 'click', () => {
-	editPacketPart( null );
+packetEditSegmentTypeElement.addEventListener( 'change', () => {
+	applyEditingSegmentType();
 } );
 
-packetPartEditRemoveButton.addEventListener( 'click', () => {
-	removeEditingPart();
+packetEditSegmentRemoveElement.addEventListener( 'click', () => {
+	removeEditingSegment();
+} );
+
+packetEditSegmentCloseElement.addEventListener( 'click', () => {
+	editPacketSegment( null );
 } );
 
 window.addEventListener( 'resize', () => {
-	updatePacketPartLines();
+	updateEditSegmentLines();
 } );
 
-// Init type select
-packetPartEditTypeSelect.innerHTML = "";
+// Init edit segment type select element
+packetEditSegmentTypeElement.innerHTML = '';
+for ( let i in Type ) {
+	let elt = Type[ i ];
+	if ( elt instanceof Type ) {
+		let typeOptionElement = document.createElement('option');
+		typeOptionElement.setAttribute( 'value', elt.identifier );
+		typeOptionElement.textContent = elt.name;
+		packetEditSegmentTypeElement.appendChild( typeOptionElement );
+	}
+}
 
-$.each( Type.Enum, ( idx, type ) => {
+// Elements and packet manipulation
+let currentPacketSegmentElements = {};
+let editingPacketSegmentUid = null;
 
-	let option = document.createElement('option');
-	option.setAttribute( 'value', type.identifier );
-	option.textContent = type.name;
-	packetPartEditTypeSelect.appendChild( option );
+function packetSegmentInit( segments ) {
 
-} );
+	// Removing all active segments
+	packetDiagramElement.innerHTML = "";
+	packetDiagramElement.appendChild( packetDiagramAddElement );
+	// packetDiagramElement.appendChild( packetDiagramSofElement );
+	// packetDiagramElement.appendChild( packetDiagramEofElement );
+	currentPacketSegmentElements = {};
 
-// Classes
-class Packet {
+	// Initialize segments
+	for ( let i in segments ) {
 
-	constructor( identifier ) {
+		let segment = segments[ i ];
 
-		this.identifier = identifier;
-
-		this.parts = [];
-
-		this.element = document.createElement('div');
-		this.element.classList.add('ds-diagram');
-
-		this.addButton = document.createElement('div');
-		this.addButton.classList.add('ds-add');
-		this.addButton.textContent = '+';
-
-		this.addButton.addEventListener( 'click', () => {
-
-			this.addPart( "identifier_" + this.parts.length, Type.Enum.UNSIGNED_INT_8 );
-
-		} );
-
-		this.updateAddButton();
+		addSegmentElement( segment.uid, segment.name, segment.size );
 
 	}
 
-	initDiagram() {
+	// Update add button
+	updatePacketDiagramAdd();
 
-		this.element.innerHTML = "";
+}
 
-		this.parts.forEach( part => {
+function addSegmentElement( uid, name, size, anim ) {
 
-			this.element.appendChild( part.element );
+	if ( currentPacketSegmentElements[ uid ] !== undefined ) return;
 
-		} );
+	anim = anim || false;
 
-		this.element.appendChild( this.addButton );
+	let segmentElement = document.createElement('div');
+	let segmentNameElement = document.createElement('div');
+	let segmentRuleElement = document.createElement('div');
+	let segmentSizeElement = document.createElement('div');
+
+	segmentElement.setAttribute( 'data-uid', uid );
+	segmentElement.classList.add('segment');
+
+	if ( anim ) {
+
+		segmentElement.style.flex = '0 0 0';
+		segmentElement.style.opacity = '0';
 
 	}
 
-	updateAddButton() {
+	segmentElement.addEventListener( 'click', () => {
+		editPacketSegment( uid );
+	} );
 
-		if ( this.parts.length === 0 ) {
-			this.addButton.style.flex = "1 1 0";
-		} else {
-			this.addButton.style.flex = "";
-		}
+	segmentNameElement.classList.add('name');
+	segmentElement.appendChild( segmentNameElement );
 
-	}
+	segmentRuleElement.classList.add('rule');
+	segmentElement.appendChild( segmentRuleElement );
 
-	addPart( identifier, type ) {
+	segmentSizeElement.classList.add('size');
+	segmentRuleElement.appendChild( segmentSizeElement );
 
-		let part = new PacketPart( identifier, type );
+	currentPacketSegmentElements[ uid ] = {
+		element: segmentElement,
+		name: segmentNameElement,
+		rule: segmentRuleElement,
+		size: segmentSizeElement
+	};
 
-		this.parts.push( part );
+	packetDiagramElement.insertBefore( segmentElement, packetDiagramAddElement );
 
-		part.element.style.flex = "0 0 0";
-		this.element.insertBefore( part.element, this.addButton );
+	updateSegmentName( uid, name );
+
+	if ( anim ) {
 
 		setTimeout( () => {
-			part.element.style.flex = "1 0 0";
+
+			updateSegmentSize( uid, size );
+			segmentElement.style.opacity = '';
+
 		}, 10 );
-
-		updatePacketPartLinesAnim( 250 );
-		this.updateAddButton();
-
-	}
-
-	removePart( part ) {
-
-		part.element.style.flex = "0 0 0";
-
-		utils.removeFromArray( this.parts, part );
-
-		setTimeout( () => {
-			part.element.remove();
-		}, 200 );
-
-		updatePacketPartLinesAnim( 250 );
-		this.updateAddButton();
-
-	}
-
-}
-
-class PacketPart {
-
-	constructor( identifier, type ) {
-
-		if ( !( type instanceof Type ) ) throw new TypeError("Invalid 'type' argument, must be a Type object");
-
-		this.element = document.createElement('div');
-		this.element.classList.add('ds-part');
-		this.element.addEventListener( 'click', () => {
-
-			editPacketPart( this );
-
-		} );
-
-		this.identifierElement = document.createElement('div');
-		this.identifierElement.classList.add('ds-identifier');
-		this.element.appendChild( this.identifierElement );
-
-		this.ruleElement = document.createElement('div');
-		this.ruleElement.classList.add('ds-rule');
-		this.element.appendChild( this.ruleElement );
-
-		this.ruleSizeElement = document.createElement('div');
-		this.ruleSizeElement.classList.add('ds-size');
-		this.ruleElement.appendChild( this.ruleSizeElement );
-
-		this.ruleTypeElement = document.createElement('div');
-		this.ruleTypeElement.classList.add('ds-type');
-		this.ruleElement.appendChild( this.ruleTypeElement );
-
-		this.identifier = identifier;
-		this.type = type;
-
-	}
-
-	set identifier( identifier ) {
-
-		this._identifier = identifier;
-		this.identifierElement.textContent = this.name;
-		this.element.setAttribute( 'title', this.name );
-
-	}
-
-	get identifier() {
-		return this._identifier;
-	}
-
-	get name() {
-		return this._identifier || this._type.name;
-	}
-
-	set type( type ) {
-
-		this._type = type;
-		this.ruleSizeElement.textContent = this._type.size + ' byte' + ( this._type.size > 1 ? 's' : '' );
-		this.ruleTypeElement.textContent = this._type.name;
-		this.updateFlex();
-
-	}
-
-	get type() {
-		return this._type;
-	}
-
-	updateFlex() {
-		this.element.style.flex = `${this._type.size} 0 0`;
-	}
-
-	setActive( active ) {
-		this.element.classList[ active ? "add" : "remove" ]('ds-active');
-	}
-
-}
-
-// Current packet and editing packet part
-let currentPacket = null;
-let editingPacketPart = null;
-
-// Save and load packets from save
-function savePackets() {
-
-	let json = [];
-
-
-
-}
-
-// Set current packet
-function setCurrentPacket( packet ) {
-
-	if ( !( packet instanceof Packet ) ) throw new TypeError("Invalid 'packet' argument, must be a Packet");
-
-	let currentDiagram = packetDiv.querySelector('div.ds-diagram');
-	if ( currentDiagram != null ) currentDiagram.remove();
-
-	currentPacket = packet;
-
-	packet.initDiagram();
-
-	packetDiv.insertBefore( packet.element, packetPartEditDiv );
-
-}
-
-// Edit packet part
-function editPacketPart( part ) {
-
-	if ( editingPacketPart === part ) return;
-
-	if ( editingPacketPart !== null ) {
-		editingPacketPart.setActive( false );
-	}
-
-	if ( ( editingPacketPart = part ) instanceof PacketPart ) {
-
-		packetPartEditIdentifierInput.value = editingPacketPart.identifier;
-		packetPartEditTypeSelect.value = editingPacketPart.type.identifier;
-
-		editingPacketPart.setActive( true );
-		packetPartEditDiv.classList.add('ds-active');
-
-		updatePacketPartLinesAnim( 450 );
 
 	} else {
 
-		packetPartEditDiv.classList.remove('ds-active');
+		updateSegmentSize( uid, size );
 
 	}
 
 }
 
-function applyEditPacketPartIdentifier() {
-	if ( editingPacketPart === null ) return;
-	editingPacketPart.identifier = packetPartEditIdentifierInput.value;
+function updateSegmentName( uid, name ) {
+	let segmentElements = currentPacketSegmentElements[ uid ];
+	if ( segmentElements !== undefined ) segmentElements.name.textContent = name;
 }
 
-function applyEditPacketPartType() {
-	if ( editingPacketPart === null ) return;
-	editingPacketPart.type = Type.Enum.fromIdentifier( packetPartEditTypeSelect.value );
-	updatePacketPartLinesAnim( 250 );
+function updateSegmentSize( uid, size ) {
+	let segmentElements = currentPacketSegmentElements[ uid ];
+	if ( segmentElements !== undefined ) {
+		segmentElements.size.textContent = `${size}`;
+		segmentElements.element.style.flex = `${size} 0 0`;
+	}
 }
 
-function removeEditingPart() {
-	if ( editingPacketPart === null || currentPacket === null ) return;
-	currentPacket.removePart( editingPacketPart );
-	editPacketPart( null );
+function updatePacketDiagramAdd() {
+	packetDiagramAddElement.style.flex = ( packetDiagramElement.querySelectorAll('div.segment').length > 0 ) ? '' : '1 1 0';
 }
 
-// Packet part zoom lines
-function updatePacketPartLinesAnim( millis ) {
-	updatePacketPartLines( utils.getCurrentMillis() + millis );
+function editPacketSegment( uid ) {
+
+	if ( editingPacketSegmentUid === uid ) return;
+
+	if ( uid !== null && currentPacketSegmentElements[ uid ] === undefined ) return;
+
+	if ( editingPacketSegmentUid !== null ) {
+
+		let editingPacketSegmentElements = currentPacketSegmentElements[ editingPacketSegmentUid ];
+		editingPacketSegmentElements.element.classList.remove('active');
+
+	}
+
+	if ( ( editingPacketSegmentUid = uid ) !== null ) {
+
+		let segmentElements = currentPacketSegmentElements[ editingPacketSegmentUid ];
+
+		ipc.send( 'packet-segment-details', uid );
+
+		packetEditSegmentIdentifierElement.value = '';
+		packetEditSegmentTypeElement.value = '';
+
+		packetEditSegmentElement.classList.add('active');
+		segmentElements.element.classList.add('active');
+
+		updateEditSegmentLinesAnim( 450 );
+
+	} else {
+
+		packetEditSegmentElement.classList.remove('active');
+
+	}
+
 }
 
-function updatePacketPartLines( until ) {
+function updateEditSegmentLinesAnim( millis ) {
+	updateEditSegmentLines( utils.getCurrentMillis() + millis );
+}
 
-	if ( editingPacketPart == null ) return;
+function updateEditSegmentLines( until )  {
 
-	let svgWidth = packetPartEditDiv.offsetWidth;
-	let svgHeight = parseFloat( packetPartEditLinesSvg.getAttribute('height') );
-	packetPartEditLinesSvg.setAttribute( 'width', svgWidth );
+	if ( editingPacketSegmentUid === null ) return;
 
-	let partBoxPositions = utils.getBoxPositions( editingPacketPart.element );
-	let partEditBoxPositions = utils.getBoxPositions( packetPartEditDiv );
+	let editingSegmentElements = currentPacketSegmentElements[ editingPacketSegmentUid ];
 
-	packetPartEditLinesSvgLeftLine.setAttribute( 'x1', 0 );
-	packetPartEditLinesSvgLeftLine.setAttribute( 'y1', svgHeight );
-	packetPartEditLinesSvgLeftLine.setAttribute( 'x2', partBoxPositions.top_left.x - partEditBoxPositions.bottom_left.x );
-	packetPartEditLinesSvgLeftLine.setAttribute( 'y2', 0 );
+	let width = packetEditSegmentElement.offsetWidth;
+	let height = parseFloat( getComputedStyle( packetDiagramElement ).marginBottom.replace( 'px', '' ) ) + 2;
 
-	packetPartEditLinesSvgRightLine.setAttribute( 'x1', svgWidth );
-	packetPartEditLinesSvgRightLine.setAttribute( 'y1', svgHeight );
-	packetPartEditLinesSvgRightLine.setAttribute( 'x2', partBoxPositions.top_right.x - partEditBoxPositions.bottom_right.x + svgWidth );
-	packetPartEditLinesSvgRightLine.setAttribute( 'y2', 0 );
+	packetEditSegmentLinesElement.setAttribute( 'width', width );
+	packetEditSegmentLinesElement.setAttribute( 'height', height );
+	packetEditSegmentLinesElement.style.left = '-1px';
+	packetEditSegmentLinesElement.style.top = ( -height ) + 'px';
+
+	let editingSegmentBox = editingSegmentElements.element.getBoundingClientRect();
+	let packetEditBox = packetEditSegmentElement.getBoundingClientRect();
+
+	packetEditSegmentLineLeftElement.setAttribute( 'x1', 0 );
+	packetEditSegmentLineLeftElement.setAttribute( 'y1', height );
+	packetEditSegmentLineLeftElement.setAttribute( 'x2', editingSegmentBox.left - packetEditBox.left );
+	packetEditSegmentLineLeftElement.setAttribute( 'y2', 0 );
+
+	packetEditSegmentLineRightElement.setAttribute( 'x1', width );
+	packetEditSegmentLineRightElement.setAttribute( 'y1', height );
+	packetEditSegmentLineRightElement.setAttribute( 'x2', ( editingSegmentBox.left + editingSegmentBox.width ) - ( packetEditBox.left + packetEditBox.width ) + width );
+	packetEditSegmentLineRightElement.setAttribute( 'y2', 0 );
 
 	if ( until !== undefined && until > utils.getCurrentMillis() ) {
 
-		setTimeout( () => {
-			updatePacketPartLines( until );
-		}, 10 );
+		setTimeout( updateEditSegmentLines, 10, until );
 
 	}
 
 }
 
-// Test
-let packet = new Packet("test_packet");
-setCurrentPacket( packet );
+function applyEditingSegmentIdentifier() {
+	if ( editingPacketSegmentUid === null ) return;
+	ipc.send( 'packet-segment-identifier', editingPacketSegmentUid, packetEditSegmentIdentifierElement.value );
+}
 
-module.exports = {
-	Packet: Packet,
-	PacketPart: PacketPart
-};
+function applyEditingSegmentType() {
+	if ( editingPacketSegmentUid === null ) return;
+	ipc.send( 'packet-segment-type', editingPacketSegmentUid, packetEditSegmentTypeElement.value );
+	updateEditSegmentLinesAnim( 450 );
+}
+
+function removeEditingSegment() {
+	if ( editingPacketSegmentUid === null ) return;
+	requestRemoveSegment( editingPacketSegmentUid );
+}
+
+function requestRemoveSegment( uid ) {
+	ipc.send( 'packet-segment-remove', uid );
+}
+
+function removeSegment( uid ) {
+
+	if ( editingPacketSegmentUid === uid ) editPacketSegment( null );
+
+	let element = currentPacketSegmentElements[ uid ].element;
+	delete currentPacketSegmentElements[ uid ];
+
+	element.style.flex = '0 0 0';
+	element.style.opacity = '0';
+
+	setTimeout( () => {
+
+		element.remove();
+		updatePacketDiagramAdd();
+
+	}, 250 );
+
+}
+
+function addSegment( uid, name, size ) {
+
+	if ( uid === undefined ) {
+
+		ipc.send( 'packet-segment-add' );
+		return;
+
+	}
+
+	addSegmentElement( uid, name, size, true );
+	editPacketSegment( uid );
+	updatePacketDiagramAdd();
+
+}
+
+function requestNewSegment() {
+	ipc.send( 'packet-segment-add' );
+}
+
+function newSegment( uid, name, size ) {
+
+	addSegmentElement( uid, name, size, true );
+	editPacketSegment( uid );
+	updatePacketDiagramAdd();
+
+}
+
+ipc.on( 'packet-segment-init', ( event, segments ) => {
+	packetSegmentInit( segments );
+} );
+
+ipc.on( 'packet-segment-name', ( event, uid, name ) => {
+	updateSegmentName( uid, name );
+} );
+
+ipc.on( 'packet-segment-size', ( event, uid, size ) => {
+	updateSegmentSize( uid, size );
+} );
+
+ipc.on( 'packet-segment-details', ( event, uid, details ) => {
+
+	packetEditSegmentIdentifierElement.value = details.identifier;
+	packetEditSegmentIdentifierElement.placeholder = details.defaultName;
+	packetEditSegmentTypeElement.value = details.type;
+
+} );
+
+ipc.on( 'packet-segment-remove', ( event, uid ) => {
+	removeSegment( uid );
+} );
+
+ipc.on( 'packet-segment-add', ( event, uid, name, size ) => {
+	newSegment( uid, name, size );
+} );

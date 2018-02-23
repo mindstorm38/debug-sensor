@@ -1,19 +1,27 @@
-/**
- * Main electron application js file
- */
+// Main electron application js file
+const main = module.exports;
 
-// - Requires
+// Requires
+const paths = require('./paths');
 const path = require('path');
+const fs = require('fs');
 const electron = require('electron');
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const ipc = electron.ipcMain;
+const utils = require('../common/utils');
+const system = require('./system');
 
-// - Working directory
-const workingDirectory = path.join( __dirname );
-const rendererDirectory = path.join( workingDirectory, "renderer" );
+// Start
+function start() {
 
-// - Main window
+	createWindow();
+
+	system.init();
+
+}
+
+// Main window
 let mainWindow = null;
 
 function createWindow() {
@@ -26,13 +34,15 @@ function createWindow() {
 		center: true
 	} );
 
-	mainWindow.loadURL( "file://" + path.join( rendererDirectory, "main.html" ) )
+	mainWindow.loadURL( "file://" + path.join( paths.renderer, 'main.html') );
+
+	mainWindow.setMenu( null );
 
 	mainWindow.on( 'closed', () => {
 
 		mainWindow = null;
 
-	} )
+	} );
 
 }
 
@@ -44,7 +54,7 @@ function switchWindowFullscreen() {
 
 app.on( 'ready', () => {
 
-	createWindow();
+	start();
 
 } );
 
@@ -67,8 +77,3 @@ app.on( 'activate', () => {
 	}
 
 } );
-
-module.exports = {
-	working_dir: workingDirectory,
-	main_window: mainWindow
-};

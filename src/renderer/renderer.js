@@ -1,11 +1,26 @@
-/**
- * Main electron renderer js file
- */
+// Main renderer script
 
-const serial = require('./serial');
-const packet = require('./packet');
+// Requires
+const electron = require('electron');
+const remote = electron.remote;
+const ipc = electron.ipcRenderer;
 
-module.exports = {
-	serial: serial,
-	packet: packet
-};
+// Reload (F5) and dev tools (F12)
+document.addEventListener( 'keydown', ( e ) => {
+
+	switch ( e.which ) {
+		case 123:
+			remote.getCurrentWindow().toggleDevTools();
+			break;
+		case 116:
+			location.reload();
+			break;
+	}
+
+} );
+
+// Register this renderer process in system
+ipc.send( 'register-renderer-process', 'main' );
+
+require('./packet');
+require('./serial');

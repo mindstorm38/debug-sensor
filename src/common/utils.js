@@ -1,10 +1,10 @@
-/**
- * Utils
- */
+// Common utils
+const utils = module.exports;
 
-const $ = require('jquery');
+// const $ = require('jquery');
 const path = require('path');
 
+/*
 function getBoxPositions( element ) {
 
 	let jQueryWindow = $( window );
@@ -30,12 +30,13 @@ function getBoxPositions( element ) {
 	};
 
 }
+*/
 
-function getCurrentMillis() {
+utils.getCurrentMillis = () => {
 	return new Date().getTime();
-}
+};
 
-function arrayDif( baseArray, compareArray, equalFunction, addFunction, removeFunction ) {
+utils.arrayDif = ( baseArray, compareArray, equalFunction, addFunction, removeFunction ) => {
 
 	baseArray.forEach( baseElement => {
 
@@ -77,21 +78,13 @@ function arrayDif( baseArray, compareArray, equalFunction, addFunction, removeFu
 
 }
 
-function removeFromArray( array, elt ) {
+utils.removeFromArray = ( array, elt ) => {
 	let idx = array.indexOf( elt );
-	if ( idx === -1 ) array;
+	if ( idx === -1 ) return false;
 	array.splice( idx, 1 );
+	return true;
 }
 
-function getAppDataDir() {
-	let appdata = process.env.APPDATA || ( process.platform == 'darwin' ? process.env.HOME + 'Library/Preferences' : '/var/local' );
-	return path.join( appdata, ".debugsensor" );
+utils.getAppdataDir = () => {
+	return process.env.APPDATA || ( process.platform == 'darwin' ? process.env.HOME + 'Library/Preferences' : '/var/local' );
 }
-
-module.exports = {
-	getBoxPositions: getBoxPositions,
-	getCurrentMillis: getCurrentMillis,
-	arrayDif: arrayDif,
-	removeFromArray: removeFromArray,
-	getAppDataDir: getAppDataDir
-};

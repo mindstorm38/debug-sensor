@@ -2,7 +2,7 @@
   "name": "debug-sensor",
   "version": "1.0.0",
   "description": "Debug sensor",
-  "main": "src/main.js",
+  "main": "src/main/start.js",
   "scripts": {
     "start": "electron .",
     "install": "electron-rebuild"

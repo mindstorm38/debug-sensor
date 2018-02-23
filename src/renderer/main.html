@@ -9,8 +9,10 @@
 
 		<script type="application/javascript">
 
-			document.addEventListener( "DOMContentLoaded", () => {
-				window.ds = require("./renderer");
+			document.addEventListener( 'DOMContentLoaded', () => {
+
+				require('./renderer');
+
 			} );
 
 		</script>
@@ -19,64 +21,62 @@
 
 	<body>
 
-		<div class="ds-serial">
+		<div class="side">
 
-			<div class="ds-title">Serial Connection</div>
+			<div class="serial">
 
-			<div class="ds-serial-connection">
+				<div class="label">Serial port</div>
+				<select class="select block" id="serial-port" title="Select serial port"></select>
 
-				<div class="ds-margin"></div>
+				<div class="margin"></div>
 
-				<div class="ds-label">Port</div>
-				<select class="ds-select" id="ds-serial-port"></select>
+				<div class="label">Serial baudrate</div>
+				<select class="select block" id="serial-baudrate" title="Serial serial baudrate"></select>
 
-				<div class="ds-margin"></div>
+				<div class="margin"></div>
 
-				<div class="ds-label">Baudrate</div>
-				<select class="ds-select" id="ds-serial-baudrate"></select>
-
-				<div class="ds-margin"></div>
+				<button class="button info block" id="serial-connect">Connection</button>
 
 			</div>
-
-			<div class="ds-serial-connected">Connected</div>
-
-			<button class="ds-button" id="ds-serial-connect"></button>
 
 		</div>
 
-		<div class="ds-separator" data-direction="v"></div>
+		<div class="packet">
 
-		<div class="ds-packet">
+			<div class="diagram">
 
-			<div class="ds-diagram">
+				<div class="add" style="flex: 1 1 0">+</div>
 
-				<!-- <div class="ds-sof">0xFF</div> -->
+				<!--
+				<div class="sof">
+					<span>0x</span>
+					<input type="text" class="byte" />
+				</div>
 
-				<!-- <div class="ds-eof">0xFF</div> -->
+				<div class="eof">
+					<span>0x</span>
+					<input type="text" class="byte" />
+				</div>
+				-->
 
 			</div>
 
-			<div class="ds-part-edit">
+			<div class="edit-segment">
 
-				<svg class="ds-lines" width="10" height="41">
-					<line class="ds-left" x1="0" x2="0" y1="0" y2="0" stroke-dasharray="2,2" stroke-width="1"/>
-					<line class="ds-right" x1="0" x2="0" y1="0" y2="0" stroke-dasharray="2,2" stroke-width="1"/>
+				<svg class="lines" width="10" height="41">
+
+					<line class="left" x1="0" y1="0" x2="0" y2="0" stroke-dasharray="2,2" stroke-width="1"/>
+					<line class="right" x1="0" y1="0" x2="0" y2="0" stroke-dasharray="2,2" stroke-width="1"/>
+
 				</svg>
 
-				<div class="ds-close" title="Close">&times;</div>
+				<input class="input" id="packet-edit-segment-identifier" type="text" title="Segment identifier" />
 
-				<div class="ds-label">Packet identifier</div>
-				<input type="text" class="ds-input" placeholder="Packet identifier" id="ds-packet-part-edit-identifier" />
+				<select class="select" id="packet-edit-segment-type" title="Segment data type"></select>
 
-				<div class="ds-margin"></div>
+				<button class="button danger" id="packet-edit-segment-remove" title="Remove this segment">Remove</button>
 
-				<div class="ds-label">Packet part type</div>
-				<select class="ds-select" id="ds-packet-part-edit-type"></select>
-
-				<div class="ds-margin"></div>
-
-				<button class="ds-button" id="ds-packet-part-edit-remove">Remove</button>
+				<button class="button info" id="packet-edit-segment-close" title="Close">&times;</button>
 
 			</div>
 
