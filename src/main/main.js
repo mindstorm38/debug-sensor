@@ -1,79 +1,63 @@
-// Main electron application js file
-const main = module.exports;
-
-// Requires
-const paths = require('./paths');
+const { app, BrowserWindow, ipcMain } = require('electron');
+const url = require('url');
 const path = require('path');
-const fs = require('fs');
-const electron = require('electron');
-const app = electron.app;
-const BrowserWindow = electron.BrowserWindow;
-const ipc = electron.ipcMain;
-const utils = require('../common/utils');
-const system = require('./system');
+const utils = require('../utils');
 
-// Start
+global.debugsensor = {
+	appdata: path.join( utils.getAppdataDir(), '.debugsensor' )
+};
+
 function start() {
+
+	require('./renderer-connector');
+	require('./serial-manager').init();
+	require('./packet-manager').init();
 
 	createWindow();
 
-	system.init();
-
 }
 
-// Main window
-let mainWindow = null;
+let win = null;
 
 function createWindow() {
 
-	mainWindow = new BrowserWindow( {
-		width: 1280,
-		height: 720,
-		title: "Debug Sensor",
+	win = new BrowserWindow( {
+		width: 900,
+		height: 600,
+		title: `Debug Sensor`,
 		maximized: true,
-		center: true
+		center: true,
+		show: false
 	} );
 
-	mainWindow.loadURL( "file://" + path.join( paths.renderer, 'main.html') );
+	win.loadURL( 'file://' + path.join( __dirname, '../../res/main.html' ) );
 
-	mainWindow.setMenu( null );
+	win.once( 'ready-to-show', () => {
+		win.show();
+	} );
 
-	mainWindow.on( 'closed', () => {
+	win.setMenu( null );
 
+	win.on( 'closed', () => {
 		mainWindow = null;
-
 	} );
 
-}
+	// win.webContents.openDevTools();
 
-function switchWindowFullscreen() {
-	if ( mainWindow != null ) {
-		mainWindow.setFullscreen( !mainWindow.isFullscreen );
-	}
 }
 
 app.on( 'ready', () => {
-
 	start();
-
 } );
 
 app.on( 'window-all-closed', () => {
-
 	if ( process.platform !== 'darwin' ) {
-
 		app.quit();
-
 	}
-
 } );
 
 app.on( 'activate', () => {
-
 	if ( mainWindow === null ) {
-
 		createWindow();
-
 	}
-
 } );

@@ -8,14 +8,12 @@
 		<link rel="stylesheet" href="./main.css" />
 
 		<script type="application/javascript">
-
 			document.addEventListener( 'DOMContentLoaded', () => {
-
-				require('./renderer');
-
+				window.debugsensor = require('../src/renderer-main');
 			} );
-
 		</script>
+
+		<script type="application/javascript" src="./plotly-latest.min.js"></script>
 
 	</head>
 
@@ -26,7 +24,9 @@
 			<div class="serial">
 
 				<div class="label">Serial port</div>
-				<select class="select block" id="serial-port" title="Select serial port"></select>
+				<select class="select block" id="serial-port" title="Select serial port">
+					<option>No serial port</option>
+				</select>
 
 				<div class="margin"></div>
 
@@ -77,6 +77,12 @@
 				<button class="button danger" id="packet-edit-segment-remove" title="Remove this segment">Remove</button>
 
 				<button class="button info" id="packet-edit-segment-close" title="Close">&times;</button>
+
+			</div>
+
+			<div class="graph">
+
+				<div id="graph-1"></div>
 
 			</div>
 
