@@ -191,6 +191,10 @@ packetEditSegmentTypeSelect.addEventListener( 'change', () => {
 	applyEditingSegmentType();
 } );
 
+window.addEventListener( 'resize', () => {
+	updateEditSegmentLines();
+} );
+
 let packetSegmentsElements = {};
 let editingPacketSegmentUid = null;
 
@@ -237,6 +241,7 @@ function addPacketSegment( uid, name, size, anim = false ) {
 	let segmentNameElement = document.createElement('div');
 	let segmentRuleElement = document.createElement('div');
 	let segmentSizeElement = document.createElement('div');
+	let segmentValueElement = document.createElement('div');
 
 	segmentElement.classList.add('segment');
 
@@ -260,16 +265,21 @@ function addPacketSegment( uid, name, size, anim = false ) {
 	segmentSizeElement.classList.add('size');
 	segmentRuleElement.appendChild( segmentSizeElement );
 
+	segmentValueElement.classList.add('value');
+	segmentElement.appendChild( segmentValueElement );
+
 	packetSegmentsElements[ uid ] = {
 		element: segmentElement,
 		name: segmentNameElement,
 		rule: segmentRuleElement,
-		size: segmentSizeElement
+		size: segmentSizeElement,
+		value: segmentValueElement
 	};
 
 	packetDiagramDiv.insertBefore( segmentElement, packetDiagramAddDiv );
 
 	updatePacketSegmentName( uid, name );
+	updatePacketSegmentValue( uid, 0 );
 
 	if ( anim ) {
 
@@ -301,13 +311,23 @@ function updatePacketSegmentSize( uid, size ) {
 	}
 }
 
+function updatePacketSegmentValue( uid, value ) {
+	let segmentElements = packetSegmentsElements[ uid ];
+	if ( segmentElements !== undefined ) segmentElements.value.textContent = `${value}`;
+}
+
 function updatePacketDiagramAdd() {
 	packetDiagramAddDiv.style.flex = Object.keys( packetSegmentsElements ).length > 0 ? '' : '1 1 0';
 }
 
 function editPacketSegment( uid ) {
 
-	if ( editingPacketSegmentUid === uid ) return;
+	if ( editingPacketSegmentUid === uid ) {
+
+		editPacketSegment( null );
+		return;
+
+	}
 
 	if ( uid !== null && packetSegmentsElements[ uid ] === undefined ) return;
 
@@ -458,36 +478,44 @@ ipcRenderer.on( 'packet-segment-details', ( event, identifier, type, defaultName
 
 } );
 
+ipcRenderer.on( 'packet-segment-value', ( event, uid, value ) => {
+	updatePacketSegmentValue( uid, value );
+} );
+
 ipcRenderer.on( 'packet-segment-data-types-list', ( event, types ) => {
 	updatePacketSegmentDataTypes( types );
 } );
 
-// Graph
-Plotly.plot( 'graph-1', [{
-	x: [ new Date() ],
-	y: [ 0 ],
-	mode: 'lines',
-	line: {
-		color: '#80CAF6',
-		shape: 'spline'
-	}
-}] );
+// Readers
+const readerDiv = document.querySelector('div.reader');
+const readerGraphButton = readerDiv.querySelector('button#reader-graph');
 
-setInterval( () => {
+readerGraphButton.addEventListener( 'click', () => {
 
-	Plotly.extendTraces( 'graph-1', {
-		x: [ [ new Date() ] ],
-		y: [ [ Math.random() ] ]
-	}, [ 0 ] );
-
-}, 1000 );
-
-ipcRenderer.on( 'graph-reset', ( event ) => {
+	ipcRenderer.send( 'reader-graph-visible-toggle' );
 
 } );
 
-ipcRenderer.on( 'graph-data-add', ( event ) => {
+function setReaderGraphVisible( visible ) {
 
+	if ( visible ) {
+
+		readerGraphButton.textContent = 'Hide graph';
+		readerGraphButton.classList.remove('info');
+		readerGraphButton.classList.add('danger');
+
+	} else {
+
+		readerGraphButton.textContent = 'Show graph';
+		readerGraphButton.classList.add('info');
+		readerGraphButton.classList.remove('danger');
+
+	}
+
+}
+
+ipcRenderer.on( 'reader-graph-visible', ( event, visible ) => {
+	setReaderGraphVisible( visible );
 } );
 
 // Reload ( F5 °116 ) and dev tools ( F12 °123 )

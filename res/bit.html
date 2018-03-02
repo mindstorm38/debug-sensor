@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+
+		<meta charset="utf-8" />
+
+		<link rel="stylesheet" href="./main.css" />
+
+		<script type="application/javascript">
+			document.addEventListener( 'DOMContentLoaded', () => {
+				require('../src/renderer-bit');
+			} );
+		</script>
+
+	</head>
+
+	<body class="bit">
+
+		<div class="bits">
+
+			<div class="bit"><span>Identifier #0</span></div>
+			<div class="bit active"><span>Identifier #1</span></div>
+
+		</div>
+
+		<div class="edit-bit">
+
+			<input class="input block" id="edit-bit-identifier" type="text" title="Bit identifier" />
+
+			<select class="select block" id="edit-bit-segment" title="Bit segment"></select>
+
+			<input class="input block" id="edit-bit-index" type="number" min="0" max="7" value="0" title="Bit index" />
+
+			<button class="button danger block" id="edit-bit-remove" title="Remove this bit">Remove</button>
+
+			<button class="button info block" id="edit-bit-close" title="Close">&times;</button>
+
+		</div>
+
+	</body>
+
+</html>

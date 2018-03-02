@@ -9,7 +9,7 @@
 
 		<script type="application/javascript">
 			document.addEventListener( 'DOMContentLoaded', () => {
-				window.debugsensor = require('../src/renderer-main');
+				require('../src/renderer-main');
 			} );
 		</script>
 
@@ -17,7 +17,7 @@
 
 	</head>
 
-	<body>
+	<body class="main">
 
 		<div class="side">
 
@@ -36,6 +36,12 @@
 				<div class="margin"></div>
 
 				<button class="button info block" id="serial-connect">Connection</button>
+
+			</div>
+
+			<div class="reader">
+
+				<button class="button block" id="reader-graph"></button>
 
 			</div>
 

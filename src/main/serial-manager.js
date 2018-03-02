@@ -9,6 +9,9 @@ const UPDATE_SERIAL_PORTS_INTERVAL = 5000;
 const BAUDRATES = [ 110, 300, 600, 1200, 2400, 4800, 9600, 14400, 19200, 28800, 38400, 56000, 57600, 115200 ];
 const INITIAL_BAUDRATE = 115200;
 
+let rendererMain = null;
+let rendererGraph = null;
+
 let currentSerialPorts = [];
 let updateIntervalId = null;
 let connectedPort = null;
@@ -21,8 +24,10 @@ module.exports.init = () => {
 
 rendererConnector.registerRendererInit( 'main', ( ipc ) => {
 
-	sendState( ipc );
-	initAvailablesBaudrates( ipc );
+	rendererMain = ipc;
+
+	sendState();
+	initAvailablesBaudrates();
 	updateCurrentSerialPorts( true );
 
 	if ( updateIntervalId !== null ) clearInterval( updateIntervalId );
@@ -35,13 +40,17 @@ rendererConnector.registerRendererInit( 'main', ( ipc ) => {
 
 } );
 
+rendererConnector.registerRendererInit( 'graph', ( ipc ) => {
+
+	rendererGraph = ipc;
+
+} );
+
 function initAvailablesBaudrates( ipc ) {
 
-	let renderer = ipc || rendererConnector.getRendererIpc('main');
+	if ( rendererMain === null ) return;
 
-	if ( renderer === undefined ) return;
-
-	renderer.send( 'serial-baudrates-list', BAUDRATES, INITIAL_BAUDRATE );
+	rendererMain.send( 'serial-baudrates-list', BAUDRATES, INITIAL_BAUDRATE );
 
 }
 
@@ -49,19 +58,17 @@ function updateCurrentSerialPorts( init = false ) {
 
 	SerialPort.list( ( err, newSerialPorts ) => {
 
-		let renderer = rendererConnector.getRendererIpc('main');
-
-		if ( canUpdatePorts() && !init && renderer !== undefined ) {
+		if ( canUpdatePorts() && !init && rendererMain !== null ) {
 
 			utils.arrayDif( currentSerialPorts, newSerialPorts, ( p1, p2 ) => {
 				return p1.comName === p2.comName;
 			}, ( addedPort ) => {
 
-				renderer.send( 'serial-port-add', addedPort.comName );
+				rendererMain.send( 'serial-port-add', addedPort.comName );
 
 			}, ( removedPort ) => {
 
-				renderer.send( 'serial-port-remove', removedPort.comName );
+				rendererMain.send( 'serial-port-remove', removedPort.comName );
 
 			} );
 
@@ -69,7 +76,7 @@ function updateCurrentSerialPorts( init = false ) {
 
 		currentSerialPorts = newSerialPorts;
 
-		if ( canUpdatePorts() && init ) {
+		if ( canUpdatePorts() && init && rendererMain !== null ) {
 
 			let ports = [];
 
@@ -79,7 +86,7 @@ function updateCurrentSerialPorts( init = false ) {
 
 			}
 
-			renderer.send( 'serial-ports-init', ports );
+			rendererMain.send( 'serial-ports-init', ports );
 
 		}
 
@@ -107,9 +114,8 @@ function setState( newState ) {
 }
 
 function sendState( ipc ) {
-	let renderer = ipc || rendererConnector.getRendererIpc('main');
-	if ( renderer === undefined ) return;
-	renderer.send( 'serial-state', state );
+	if ( rendererMain === null ) return;
+	rendererMain.send( 'serial-state', state );
 }
 
 function connect( port, baudrate ) {
@@ -180,6 +186,15 @@ ipcMain.on( 'serial-disconnect', ( event ) => {
 	disconnect();
 } );
 
+function valuesAdded( values ) {
+	if ( rendererGraph !== null ) rendererGraph.send( 'graph-value-add', values, new Date() );
+	if ( rendererMain !== null ) {
+		for ( let i in values ) {
+			rendererMain.send( 'packet-segment-value', i, values[ i ] );
+		}
+	}
+}
+
 function parseBuffer() {
 
 	if ( buffer === null ) return;
@@ -243,7 +258,7 @@ function parseBuffer() {
 
 		let values = packet.parseBuffer( target );
 
-		console.log( values );
+		valuesAdded( values );
 
 	}
 
