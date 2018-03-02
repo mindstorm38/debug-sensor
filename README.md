@@ -22,7 +22,8 @@ This limitation is only due to the `serialport` dependency, the help would be we
 ### Installation
 If you want to install this application there is two options :
 - Clone or download this repository, and install yourselves all dependencies and launch it with `start.bat` windows script or `npm start` command.
-- Download pre-packaged zip file for your (*Not yet available*)
+- Download pre-packaged releases zip file for your platform, extract the zip in a folder named, for example "debug-sensor" and then run the executable file `debug-sensor.exe`.
+
 > Important note : Linux and Mac platforms currently not supported (please refer to [Platform Support](#platform-support)).
 
 ---------
