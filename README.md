@@ -1,6 +1,8 @@
 # Debug sensor
 Debug sensor is an electron application that use NodeJS (server-based javascript).
 
+![GitHub release](https://img.shields.io/github/release/mindstorm38/debug-sensor.svg)
+
 ## Intro
 Debug sensor let you to communicate with a serial port and retrieve customisable packet and values.
 
