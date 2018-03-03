@@ -1,3 +1,4 @@
 /node_modules/*
 /debug-sensor-*
 package-lock.json
+/releases/*
