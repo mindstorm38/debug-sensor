@@ -16,11 +16,17 @@ Debug sensor let you to communicate with a serial port and retrieve customisable
   * [Packet configuration](#packet-configuration)
   * [Connection](#connection)
   * [Real-time graph](#real-time-graph)
+* [Issues](#issues)
+* [Sensors codes examples](#sensors-codes-examples)
 * [License](#license)
+
+---------
 
 ### Platform Support
 Debug sensor is currently only supported by Windows.
 This limitation is only due to the `serialport` dependency, the help would be welcome from other contributors to help me to port this application on others platforms.
+
+---------
 
 ### Installation
 If you want to install this application there is two options :
@@ -65,6 +71,19 @@ To connect to your serial port, you must already have it installed on your compu
 
 #### Real-time graph
 The real-time graph is displayed in another window and can be accessed by clicking the "Show graph" button on the left side.
+
+---------
+
+### Sensors codes examples
+
+> Not yet example
+
+---------
+
+### Issues
+You can repport issues here : [Github Issues](https://github.com/mindstorm38/debug-sensor/issues)
+
+---------
 
 ### License
 Debug sensor is Apache-2.0 licensed
