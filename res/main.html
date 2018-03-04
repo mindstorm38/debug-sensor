@@ -47,48 +47,65 @@
 
 		</div>
 
-		<div class="packet">
+		<div class="center">
 
-			<div class="diagram">
+			<div class="packet">
 
-				<div class="add" style="flex: 1 1 0">+</div>
+				<div class="diagram">
 
-				<!--
-				<div class="sof">
-					<span>0x</span>
-					<input type="text" class="byte" />
+					<div class="add" style="flex: 1 1 0">+</div>
+
+					<!--
+					<div class="sof">
+						<span>0x</span>
+						<input type="text" class="byte" />
+					</div>
+
+					<div class="eof">
+						<span>0x</span>
+						<input type="text" class="byte" />
+					</div>
+					-->
+
 				</div>
 
-				<div class="eof">
-					<span>0x</span>
-					<input type="text" class="byte" />
+				<div class="edit-segment">
+
+					<svg class="lines" width="10" height="41">
+
+						<line class="left" x1="0" y1="0" x2="0" y2="0" stroke-dasharray="2,2" stroke-width="1"/>
+						<line class="right" x1="0" y1="0" x2="0" y2="0" stroke-dasharray="2,2" stroke-width="1"/>
+
+					</svg>
+
+					<input class="input" id="packet-edit-segment-identifier" type="text" title="Segment identifier" />
+
+					<select class="select" id="packet-edit-segment-type" title="Segment data type"></select>
+
+					<button class="button danger" id="packet-edit-segment-remove" title="Remove this segment">Remove</button>
+
+					<button class="button info" id="packet-edit-segment-close" title="Close">&times;</button>
+
 				</div>
-				-->
 
 			</div>
 
-			<div class="edit-segment">
+			<div class="console">
 
-				<svg class="lines" width="10" height="41">
+				<div class="binary"></div>
 
-					<line class="left" x1="0" y1="0" x2="0" y2="0" stroke-dasharray="2,2" stroke-width="1"/>
-					<line class="right" x1="0" y1="0" x2="0" y2="0" stroke-dasharray="2,2" stroke-width="1"/>
+				<div class="text active">
 
-				</svg>
+					<div class="content"></div>
 
-				<input class="input" id="packet-edit-segment-identifier" type="text" title="Segment identifier" />
+					<div class="input">
 
-				<select class="select" id="packet-edit-segment-type" title="Segment data type"></select>
+						<span>&gt</span>
+						<input type="text" />
 
-				<button class="button danger" id="packet-edit-segment-remove" title="Remove this segment">Remove</button>
+					</div>
 
-				<button class="button info" id="packet-edit-segment-close" title="Close">&times;</button>
-
-			</div>
-
-			<div class="graph">
-
-				<div id="graph-1"></div>
+				</div>
 
 			</div>
 

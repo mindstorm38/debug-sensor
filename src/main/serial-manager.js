@@ -161,6 +161,7 @@ function connect( port, baudrate ) {
 		if ( buffer === null ) buffer = Buffer.from( data );
 		else buffer = Buffer.concat( [ buffer, data ] );
 
+		// consolePush( data );
 		parseBuffer();
 
 	} );
@@ -186,6 +187,20 @@ ipcMain.on( 'serial-disconnect', ( event ) => {
 	disconnect();
 } );
 
+ipcMain.on( 'console-send', ( event, bytes ) => {
+	consoleSend( bytes );
+} );
+
+function consolePush( bytes ) {
+	if ( bytes.length === 0 ) return;
+	if ( rendererMain !== null ) rendererMain.send( 'console-push', bytes );
+}
+
+function consoleSend( bytes ) {
+	if ( state !== 'connected' || connectedPort === null ) return;
+	connectedPort.write( Buffer.from( bytes ) );
+}
+
 function valuesAdded( values ) {
 	if ( rendererGraph !== null ) rendererGraph.send( 'graph-value-add', values, new Date() );
 	if ( rendererMain !== null ) {
@@ -203,30 +218,43 @@ function parseBuffer() {
 
 	if ( packet === null ) return;
 
+	let unreadBytes = [];
+
 	let minSize = packet.getSize();
 
 	while ( buffer.length >= ( minSize + 2 ) ) { // +2 for SOF or EOF
 
 		// let maxSize = minSize * 2;
 
+		let escape = false;
+
 		for ( let i = 0; i < buffer.length; i++ ) {
 
 			let b = buffer[ i ];
 
-			if ( b === packet.sof ) {
+			if ( !escape && b === packet.escape ) {
+				escape = true;
+				continue;
+			}
+
+			if ( !escape && b === packet.sof ) {
 
 				buffer = buffer.slice( i + 1 );
 				break;
 
 			}
 
+			unreadBytes.push( b );
+
+			if ( escape ) escape = false;
+
 		}
 
-		if ( buffer.length < ( minSize + 1 ) ) return; // +1 for EOF, SOF has been sliced
+		if ( buffer.length < ( minSize + 1 ) ) break; // +1 for EOF, SOF has been sliced
 
 		let target = Buffer.alloc( minSize ); // Packet data buffer
 		let targetIndex = 0;
-		let escape = false;
+		escape = false;
 
 		for ( let i = 0; i < buffer.length; i++ ) {
 
@@ -254,12 +282,14 @@ function parseBuffer() {
 
 		}
 
-		if ( targetIndex !== minSize ) return; // Stop read if target not fully filled
+		if ( targetIndex !== minSize ) break; // Stop read if target not fully filled
 
 		let values = packet.parseBuffer( target );
 
 		valuesAdded( values );
 
 	}
+
+	consolePush( unreadBytes );
 
 }

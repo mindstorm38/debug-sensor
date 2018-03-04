@@ -17,6 +17,8 @@
 @info-color: #187feb;
 @danger-color: #ff6363;
 @separator-color: #cccccc;
+@console-input-height: 30px;
+@console-input-left-space: 14px;
 
 // Presets
 .field-block {
@@ -213,239 +215,350 @@ body.main {
 
 	}
 
-	// Packet
-	div.packet {
+	// Center
+	div.center {
 
-		display: block;
+		display: flex;
+		flex-direction: column;
 		flex: 1 0 0;
-		width: 100%;
-		height: 100%;
-		padding: @packet-padding-y @packet-padding-x;
 
-		div.diagram {
+		// Packet
+		div.packet {
 
-			position: relative;
-			display: flex;
-			flex-direction: row;
-			width: @packet-diagram-width;
-			min-width: @packet-diagram-min-width;
-			height: @packet-diagram-height;
-			margin-left: auto;
-			margin-right: auto;
-			margin-top: @packet-diagram-margin-top;
-			margin-bottom: @packet-diagram-margin-bottom;
-			border: 1px solid @packet-diagram-color;
-			border-radius: 2px;
+			display: block;
+			flex: 1 0 0;
+			width: 100%;
+			height: 100%;
+			padding: @packet-padding-y @packet-padding-x;
 
-			div.segment {
+			div.diagram {
 
-				display: block;
 				position: relative;
-				cursor: pointer;
-				opacity: 1;
-				border-right: 1px dashed @packet-diagram-color;
-				background-color: transparent;
-				transition: background-color .2s, flex .2s, opacity .2s;
+				display: flex;
+				flex-direction: row;
+				width: @packet-diagram-width;
+				min-width: @packet-diagram-min-width;
+				height: @packet-diagram-height;
+				margin-left: auto;
+				margin-right: auto;
+				margin-top: @packet-diagram-margin-top;
+				margin-bottom: @packet-diagram-margin-bottom;
+				border: 1px solid @packet-diagram-color;
+				border-radius: 2px;
 
-				div.name {
-
-					display: block;
-					position: absolute;
-					top: 50%;
-					left: 50%;
-					transform: translate( -50%, -50% );
-					font-size: 11px;
-					color: #1b1b1b;
-					white-space: nowrap;
-					text-overflow: ellipsis;
-					overflow: hidden;
-					max-width: 80%;
-					line-height: 2em;
-
-				}
-
-				div.value {
+				div.segment {
 
 					display: block;
-					position: absolute;
-					left: 50%;
-					bottom: 0;
-					transform: translateX( -50% );
-					font-size: 11px;
-					color: #1b1b1b;
-					white-space: nowrap;
-					text-overflow: ellipsis;
-					overflow: hidden;
-					max-width: 80%;
-					line-height: 2em;
+					position: relative;
+					cursor: pointer;
+					opacity: 1;
+					border-right: 1px dashed @packet-diagram-color;
+					background-color: transparent;
+					transition: background-color .2s, flex .2s, opacity .2s;
 
-				}
-
-				div.rule {
-
-					display: block;
-					position: absolute;
-					left: 0;
-					top: -10px;
-					width: 100%;
-					height: 6px;
-					border: 1px solid #0095ff;
-					border-top-left-radius: 2px;
-					border-top-right-radius: 2px;
-					border-bottom: none;
-
-					div.size {
+					div.name {
 
 						display: block;
 						position: absolute;
-						text-align: center;
+						top: 50%;
+						left: 50%;
+						transform: translate( -50%, -50% );
+						font-size: 11px;
+						color: #1b1b1b;
+						white-space: nowrap;
+						text-overflow: ellipsis;
+						overflow: hidden;
+						max-width: 80%;
+						line-height: 2em;
+
+					}
+
+					div.value {
+
+						display: block;
+						position: absolute;
+						left: 50%;
+						bottom: 0;
+						transform: translateX( -50% );
+						font-size: 11px;
+						color: #1b1b1b;
+						white-space: nowrap;
+						text-overflow: ellipsis;
+						overflow: hidden;
+						max-width: 80%;
+						line-height: 2em;
+
+					}
+
+					div.rule {
+
+						display: block;
+						position: absolute;
+						left: 0;
+						top: -10px;
 						width: 100%;
-						font-size: 9px;
-						line-height: 10px;
-						top: -12px;
-						color: #6c6c6c;
+						height: 6px;
+						border: 1px solid #0095ff;
+						border-top-left-radius: 2px;
+						border-top-right-radius: 2px;
+						border-bottom: none;
+
+						div.size {
+
+							display: block;
+							position: absolute;
+							text-align: center;
+							width: 100%;
+							font-size: 9px;
+							line-height: 10px;
+							top: -12px;
+							color: #6c6c6c;
+
+						}
 
 					}
 
 				}
 
-			}
+				div.segment:hover,
+				div.segment.active {
 
-			div.segment:hover,
-			div.segment.active {
+					background-color: #f6f6f6;
 
-				background-color: #f6f6f6;
+				}
 
-			}
+				div.add {
 
-			div.add {
+					display: block;
+					text-align: center;
+					line-height: @packet-diagram-height - 2px;
+					cursor: pointer;
+					color: #18b90a;
+					font-size: 13px;
+					background-color: #fff;
+					width: 20px;
+					transition: background-color .2s, width .2s, flex .2s;
 
-				display: block;
-				text-align: center;
-				line-height: @packet-diagram-height - 2px;
-				cursor: pointer;
-				color: #18b90a;
-				font-size: 13px;
-				background-color: #fff;
-				width: 20px;
-				transition: background-color .2s, width .2s, flex .2s;
+				}
 
-			}
+				div.add:hover {
 
-			div.add:hover {
+					background-color: #f4fff3;
 
-				background-color: #f4fff3;
+				}
 
-			}
-
-			div.sof,
-			div.eof {
-
-				display: block;
-				position: absolute;
-				width: @packet-diagram-frame-limits-width;
-				top: ( @packet-diagram-height - @packet-diagram-frame-limits-height ) / 2 - 2px;
-				height: @packet-diagram-frame-limits-height;
-				border: 1px solid @packet-diagram-color;
-
-				input {
+				div.sof,
+				div.eof {
 
 					display: block;
 					position: absolute;
-					width: 40px;
-					background-color: rgba(0,0,0,0);
-					border: 1px solid transparent;
-					border-radius: 2px;
-					font-size: 11px;
-					text-align: left;
-					height: 20px;
-					line-height: 18px;
-					top: 20px;
-					left: 10px;
-					color: #8c8c8c;
-					font-family: monospace;
-					padding: 0;
-					padding-left: 20px;
-					padding-right: 2px;
-					transition: background-color .2s,border-color .2s,color .2s;
+					width: @packet-diagram-frame-limits-width;
+					top: ( @packet-diagram-height - @packet-diagram-frame-limits-height ) / 2 - 2px;
+					height: @packet-diagram-frame-limits-height;
+					border: 1px solid @packet-diagram-color;
+
+					input {
+
+						display: block;
+						position: absolute;
+						width: 40px;
+						background-color: rgba(0,0,0,0);
+						border: 1px solid transparent;
+						border-radius: 2px;
+						font-size: 11px;
+						text-align: left;
+						height: 20px;
+						line-height: 18px;
+						top: 20px;
+						left: 10px;
+						color: #8c8c8c;
+						font-family: monospace;
+						padding: 0;
+						padding-left: 20px;
+						padding-right: 2px;
+						transition: background-color .2s,border-color .2s,color .2s;
+
+					}
+
+					input:hover,
+					input:focus {
+
+						color: #424242;
+						border-color: #d6d6d6;
+
+					}
+
+					span {
+
+						display: block;
+						position: absolute;
+						height: 20px;
+						top: 20px;
+						left: 16px;
+						font-size: 11px;
+						line-height: 20px;
+						font-family: monospace;
+						color: #8c8c8c;
+
+					}
 
 				}
 
-				input:hover,
-				input:focus {
+				div.sof {
 
-					color: #424242;
-					border-color: #d6d6d6;
+					left: -@packet-diagram-frame-limits-width - 1px;
+					border-right: none;
 
 				}
+
+				div.eof {
+
+					right: -@packet-diagram-frame-limits-width - 1px;
+					border-left: none;
+
+				}
+
+			}
+
+			div.edit-segment {
+
+				display: block;
+				position: relative;
+				transform: translate( 0, -100% ) scale( 0 );
+				opacity: 0;
+				transition: transform .4s,opacity .1s;
+				border: 1px dashed #cecccc;
+				padding: 10px 20px;
+				text-align: center;
+				font-size: 0;
+
+				svg.lines {
+
+					display: block;
+					position: absolute;
+					stroke: @packet-diagram-color;
+
+				}
+
+			}
+
+			div.edit-segment.active {
+
+				transform: translate( 0, 0 ) scale( 1 );
+				opacity: 1;
+
+			}
+
+		}
+
+		// Console
+		div.console {
+
+			display: none;
+			flex-direction: row;
+			border-top: 1px solid @separator-color;
+			height: 200px;
+		    color: #4a4a4a;
+			font-family: monospace;
+
+			div.binary,
+			div.text { height: 100%; }
+
+			div.binary {
+
+				display: none;
+				font-size: 0;
+				padding: 20px;
+				overflow: auto;
 
 				span {
 
-					display: block;
-					position: absolute;
-					height: 20px;
-					top: 20px;
-					left: 16px;
-					font-size: 11px;
-					line-height: 20px;
-					font-family: monospace;
-					color: #8c8c8c;
+					display: inline-block;
+					font-size: 13px;
+					padding: 4px;
+					cursor: pointer;
+					background-color: transparent;
+					transition: background-color .2s, color .2s;
+
+				}
+
+				span:hover {
+
+					background-color: #f1f1f1;
 
 				}
 
 			}
 
-			div.sof {
+			div.binary.active { display: block; }
 
-				left: -@packet-diagram-frame-limits-width - 1px;
-				border-right: none;
+			div.text {
+
+				display: none;
+				flex-direction: column;
+
+				div.content {
+
+					flex: 1 0 0;
+					padding: 20px;
+					font-size: 11px;
+					white-space: pre-wrap;
+					word-break: break-all;
+					overflow: auto;
+
+				}
+
+				div.input {
+
+					position: relative;
+					display: block;
+					flex-direction: row;
+					border-top: 1px solid @separator-color;
+					height: @console-input-height;
+					line-height: @console-input-height - 1px;
+
+					span {
+
+						display: block;
+						position: absolute;
+						width: @console-input-left-space;
+						height: 100%;
+						text-align: right;
+						font-size: 11px;
+						color: #7e7e7e;
+
+					}
+
+					input {
+
+						display: block;
+						width: 100%;
+						height: 100%;
+						padding-left: @console-input-left-space + 4px;
+						padding-right: 10px;
+						border: none;
+						background-color: #f5f5f5;
+					    color: #7c7c7c;
+						font-size: 13px;
+						font-family: inherit;
+						transition: background-color .2s, color .2s;
+
+					}
+
+					input:focus,
+					input:hover { background-color: #ffffff; }
+
+					input:focus { color: #343434; }
+
+				}
 
 			}
 
-			div.eof {
-
-				right: -@packet-diagram-frame-limits-width - 1px;
-				border-left: none;
-
-			}
+			div.text.active { display: flex; }
 
 		}
 
-		div.edit-segment {
-
-			display: block;
-			position: relative;
-			transform: translate( 0, -100% ) scale( 0 );
-			opacity: 0;
-			transition: transform .4s,opacity .1s;
-			border: 1px dashed #cecccc;
-			padding: 10px 20px;
-			text-align: center;
-			font-size: 0;
-
-			svg.lines {
-
-				display: block;
-				position: absolute;
-				stroke: @packet-diagram-color;
-
-			}
-
-		}
-
-		div.edit-segment.active {
-
-			transform: translate( 0, 0 ) scale( 1 );
-			opacity: 1;
-
-		}
-
-		div.graph {
-
-			display: block;
-			margin-top: 20px;
-
-		}
+		div.console.active { display: block; }
 
 	}
 

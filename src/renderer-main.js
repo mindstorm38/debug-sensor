@@ -110,6 +110,8 @@ function updateSerialElements() {
 			serialConnectButton.classList.remove('info');
 			serialConnectButton.classList.add('danger');
 
+			consoleDiv.classList.add('active');
+
 		} else {
 
 			serialBaudrateSelect.classList.remove('disabled');
@@ -118,6 +120,8 @@ function updateSerialElements() {
 
 			serialConnectButton.classList.add('info');
 			serialConnectButton.classList.remove('danger');
+
+			consoleDiv.classList.remove('active');
 
 		}
 
@@ -156,6 +160,57 @@ ipcRenderer.on( 'serial-state', ( event, state ) => {
 	serialState = state;
 	updateSerialElements();
 
+} );
+
+// Console
+const consoleDiv = document.querySelector('div.console');
+const consoleBinaryDiv = consoleDiv.querySelector('div.binary');
+const consoleTextDiv = consoleDiv.querySelector('div.text');
+const consoleTextContentDiv = consoleTextDiv.querySelector('div.content');
+const consoleTextInput = consoleTextDiv.querySelector('input');
+
+let consoleScrollLock = false;
+
+consoleTextInput.addEventListener( 'keydown', ( event ) => {
+	if ( event.which === 13 ) consoleSend();
+} );
+
+function consolePush( bytes ) {
+
+	bytes.forEach( ( byte ) => {
+
+		let binaryByteSpan = document.createElement('span');
+		binaryByteSpan.textContent = byte.toString( 16 );
+		consoleBinaryDiv.appendChild( binaryByteSpan );
+
+		consoleTextContentDiv.textContent += String.fromCharCode( byte );
+
+	} );
+
+	if ( !consoleScrollLock ) consoleTextContentDiv.scrollTop = consoleTextContentDiv.scrollHeight;
+
+}
+
+function consoleSend() {
+
+	let value = consoleTextInput.value + '\n'; // TODO: Add an option to add or not '\n'
+
+	// Converting text to bytes
+	let bytes = [];
+	for ( let i = 0; i < value.length; i++ ) {
+		bytes.push( value.charCodeAt( i ) );
+	}
+
+	// Resetting input
+	consoleTextInput.value = "";
+
+	// Send to main process
+	ipcRenderer.send( 'console-send', bytes );
+
+}
+
+ipcRenderer.on( 'console-push', ( event, bytes ) => {
+	consolePush( bytes );
 } );
 
 // Packet
