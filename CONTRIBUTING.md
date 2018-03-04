@@ -1,2 +1,4 @@
 # Contribute to Debug sensor
-This is the guide to help me in the development of `debug-sensor`...
+You want to help me in the development of `debug-sensor` ? Just read this file !
+
+***Not yet available***

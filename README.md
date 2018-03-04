@@ -16,11 +16,17 @@ Debug sensor let you to communicate with a serial port and retrieve customisable
   * [Packet configuration](#packet-configuration)
   * [Connection](#connection)
   * [Real-time graph](#real-time-graph)
+* [Issues](#issues)
+* [Sensors codes examples](#sensors-codes-examples)
 * [License](#license)
+
+---------
 
 ### Platform Support
 Debug sensor is currently only supported by Windows.
 This limitation is only due to the `serialport` dependency, the help would be welcome from other contributors to help me to port this application on others platforms.
+
+---------
 
 ### Installation
 If you want to install this application there is two options :
@@ -38,6 +44,10 @@ The debug sensor's ergonomic interface makes it really easy to handle.
 The first thing to do is to configure the packet pattern, that's the way the data is stored in the packet sent over the serial port.
 
 > Note : Pattern changes are automatically saved.
+
+Packets are delimited by `sof` (start-of-frame), `eof` (end-of-frame) and an `escape` byte, the software only recognise packets with valid delimiters en escape.
+
+> Important note :  Delimiters and escapes bytes are not currently configurable and their default values are : `sof` and `eof` is `0x7E` and `escape` is `0x7D`
 
 A packet is composed of segments, each segment has :
 * A type, it defines the size and the way the bytes will be read. List of current types :
@@ -61,6 +71,19 @@ To connect to your serial port, you must already have it installed on your compu
 
 #### Real-time graph
 The real-time graph is displayed in another window and can be accessed by clicking the "Show graph" button on the left side.
+
+---------
+
+### Sensors codes examples
+
+> Not yet example
+
+---------
+
+### Issues
+You can repport issues here : [Github Issues](https://github.com/mindstorm38/debug-sensor/issues)
+
+---------
 
 ### License
 Debug sensor is Apache-2.0 licensed
