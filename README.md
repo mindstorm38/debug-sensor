@@ -16,6 +16,7 @@ Debug sensor let you to communicate with a serial port and retrieve customisable
   * [Packet configuration](#packet-configuration)
   * [Connection](#connection)
   * [Real-time graph](#real-time-graph)
+  * [Console](#console)
 * [Issues](#issues)
 * [Sensors codes examples](#sensors-codes-examples)
 * [License](#license)
@@ -71,6 +72,11 @@ To connect to your serial port, you must already have it installed on your compu
 
 #### Real-time graph
 The real-time graph is displayed in another window and can be accessed by clicking the "Show graph" button on the left side.
+
+#### Console
+A console is available at the bottom of the right side, it can be useful if you want to collect text data from your sensor, or to send text commands.
+
+> Note : You must escape all bytes, even on bytes out of packets
 
 ---------
 
