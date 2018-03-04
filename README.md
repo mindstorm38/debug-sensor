@@ -81,6 +81,7 @@ A console is available at the bottom of the right side, it can be useful if you 
 ---------
 
 ### Sensors codes examples
+Read `examples` folder's [README](https://github.com/mindstorm38/debug-sensor/blob/master/examples/README.md) for more explanations.
 
 > Not yet example
 
