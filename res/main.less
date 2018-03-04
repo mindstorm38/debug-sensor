@@ -454,7 +454,7 @@ body.main {
 		// Console
 		div.console {
 
-			display: none;
+			display: block;
 			flex-direction: row;
 			border-top: 1px solid @separator-color;
 			height: 200px;
@@ -494,7 +494,7 @@ body.main {
 
 			div.text {
 
-				display: none;
+				display: block;
 				flex-direction: column;
 
 				div.content {
@@ -511,7 +511,7 @@ body.main {
 				div.input {
 
 					position: relative;
-					display: block;
+					display: none;
 					flex-direction: row;
 					border-top: 1px solid @separator-color;
 					height: @console-input-height;
@@ -552,13 +552,13 @@ body.main {
 
 				}
 
+				div.input.active { display: block; }
+
 			}
 
 			div.text.active { display: flex; }
 
 		}
-
-		div.console.active { display: block; }
 
 	}
 

@@ -110,7 +110,7 @@ function updateSerialElements() {
 			serialConnectButton.classList.remove('info');
 			serialConnectButton.classList.add('danger');
 
-			consoleDiv.classList.add('active');
+			consoleTextInputDiv.classList.add('active');
 
 		} else {
 
@@ -121,7 +121,7 @@ function updateSerialElements() {
 			serialConnectButton.classList.add('info');
 			serialConnectButton.classList.remove('danger');
 
-			consoleDiv.classList.remove('active');
+			consoleTextInputDiv.classList.remove('active');
 
 		}
 
@@ -167,11 +167,12 @@ const consoleDiv = document.querySelector('div.console');
 const consoleBinaryDiv = consoleDiv.querySelector('div.binary');
 const consoleTextDiv = consoleDiv.querySelector('div.text');
 const consoleTextContentDiv = consoleTextDiv.querySelector('div.content');
-const consoleTextInput = consoleTextDiv.querySelector('input');
+const consoleTextInputDiv = consoleTextDiv.querySelector('div.input');
+const consoleTextInputInput = consoleTextInputDiv.querySelector('input');
 
 let consoleScrollLock = false;
 
-consoleTextInput.addEventListener( 'keydown', ( event ) => {
+consoleTextInputInput.addEventListener( 'keydown', ( event ) => {
 	if ( event.which === 13 ) consoleSend();
 } );
 
@@ -193,7 +194,7 @@ function consolePush( bytes ) {
 
 function consoleSend() {
 
-	let value = consoleTextInput.value + '\n'; // TODO: Add an option to add or not '\n'
+	let value = consoleTextInputInput.value + '\n'; // TODO: Add an option to add or not '\n'
 
 	// Converting text to bytes
 	let bytes = [];
@@ -202,7 +203,7 @@ function consoleSend() {
 	}
 
 	// Resetting input
-	consoleTextInput.value = "";
+	consoleTextInputInput.value = "";
 
 	// Send to main process
 	ipcRenderer.send( 'console-send', bytes );

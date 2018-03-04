@@ -142,7 +142,7 @@ function createWindow() {
 
 	module.exports.win = win;
 
-	// win.webContents.openDevTools();
+	win.webContents.openDevTools();
 
 }
 
