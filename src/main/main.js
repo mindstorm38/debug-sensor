@@ -106,9 +106,7 @@ function stop() {
 
 	}
 
-	// --- \\
-
-	app.quit();
+	// ---- \\
 
 }
 
@@ -142,7 +140,7 @@ function createWindow() {
 
 	module.exports.win = win;
 
-	win.webContents.openDevTools();
+	// win.webContents.openDevTools();
 
 }
 
@@ -152,8 +150,12 @@ app.on( 'ready', () => {
 
 app.on( 'window-all-closed', () => {
 	if ( process.platform !== 'darwin' ) {
-		stop();
+		app.quit();
 	}
+} );
+
+app.on( 'quit', () => {
+	stop();
 } );
 
 app.on( 'activate', () => {

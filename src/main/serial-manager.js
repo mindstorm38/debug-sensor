@@ -175,7 +175,7 @@ function disconnect() {
 	if ( connectedPort !== null && connectedPort.isOpen ) connectedPort.close();
 
 	state = 'no_port';
-	updateCurrentSerialPorts( true );
+	updateCurrentSerialPorts( false );
 
 }
 
