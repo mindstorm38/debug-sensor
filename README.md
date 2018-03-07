@@ -19,7 +19,7 @@ Debug sensor let you to communicate with a serial port and retrieve customisable
   * [Console](#console)
 * [Issues](#issues)
 * [Sensors codes examples](#sensors-codes-examples)
-* [License](#license)
+* [Licenses](#licenses)
 
 ---------
 
@@ -92,8 +92,9 @@ You can repport issues here : [Github Issues](https://github.com/mindstorm38/deb
 
 ---------
 
-### License
+### Licenses
 Debug sensor is Apache-2.0 licensed
+
 Dependencies :
 - [plotly.js](https://github.com/plotly/plotly.js) : MIT License
 - [node-serialport](https://github.com/node-serialport/node-serialport) : MIT License
