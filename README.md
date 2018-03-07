@@ -34,7 +34,7 @@ If you want to install this application there is two options :
 - Clone or download this repository, and install yourselves all dependencies and launch it with `start.bat` windows script or `npm start` command.
 - Download pre-packaged releases zip file for your platform, extract the zip in a folder named, for example "debug-sensor" and then run the executable file `debug-sensor.exe`.
 
-> Important note : Linux and Mac platforms currently not supported (please refer to [Platform Support](#platform-support)).
+> **Important note** : Linux and Mac platforms currently not supported (please refer to [Platform Support](#platform-support)).
 
 ---------
 
@@ -48,7 +48,7 @@ The first thing to do is to configure the packet pattern, that's the way the dat
 
 Packets are delimited by `sof` (start-of-frame), `eof` (end-of-frame) and an `escape` byte, the software only recognise packets with valid delimiters en escape.
 
-> Important note :  Delimiters and escapes bytes are not currently configurable and their default values are : `sof` and `eof` is `0x7E` and `escape` is `0x7D`
+> **Important note** :  Delimiters and escapes bytes are not currently configurable and their default values are : `sof` and `eof` is `0x7E` and `escape` is `0x7D`
 
 A packet is composed of segments, each segment has :
 * A type, it defines the size and the way the bytes will be read. List of current types :
