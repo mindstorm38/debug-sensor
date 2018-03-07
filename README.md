@@ -71,7 +71,7 @@ To connect to your serial port, you must already have it installed on your compu
 > Note : Be careful to configure the pattern of your packet before connecting, otherwise you will not receive data, which is normal behavior.
 
 #### Real-time graph
-The real-time graph is displayed in another window and can be accessed by clicking the "Show graph" button on the left side.
+The real-time graph is displayed in another window and can be accessed by clicking the "Show graph" button on the left side. I'm using the [plotly.js](https://plot.ly/javascript) javascript library.
 
 #### Console
 A console is available at the bottom of the right side, it can be useful if you want to collect text data from your sensor, or to send text commands.
@@ -94,3 +94,6 @@ You can repport issues here : [Github Issues](https://github.com/mindstorm38/deb
 
 ### License
 Debug sensor is Apache-2.0 licensed
+Dependencies :
+- [plotly.js](https://github.com/plotly/plotly.js) : MIT License
+- [node-serialport](https://github.com/node-serialport/node-serialport) : MIT License
