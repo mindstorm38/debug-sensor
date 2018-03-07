@@ -35,6 +35,10 @@ win.init = () => {
 
 	win.window.setMenu( null );
 
+	win.window.on( 'minimize', () => {
+		win.hide();
+	} );
+
 };
 
 win.show = () => {
@@ -83,5 +87,5 @@ ipcMain.on( 'renderer-graph-request-close', ( event ) => {
 
 	if ( win.window.isDestroyed() ) return;
 	win.hide();
-	
+
 } );

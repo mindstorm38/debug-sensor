@@ -169,12 +169,46 @@ const consoleTextDiv = consoleDiv.querySelector('div.text');
 const consoleTextContentDiv = consoleTextDiv.querySelector('div.content');
 const consoleTextInputDiv = consoleTextDiv.querySelector('div.input');
 const consoleTextInputInput = consoleTextInputDiv.querySelector('input');
+const consoleModeDiv = consoleDiv.querySelector('div.mode');
+const consoleModeBinaryDiv = consoleModeDiv.querySelector('div.binary-mode');
+const consoleModeTextDiv = consoleModeDiv.querySelector('div.text-mode');
 
 let consoleScrollLock = false;
+let consoleMode = 'text';
 
 consoleTextInputInput.addEventListener( 'keydown', ( event ) => {
 	if ( event.which === 13 ) consoleSend();
 } );
+
+consoleModeBinaryDiv.addEventListener( 'click', ( event ) => {
+	consoleSetMode('binary');
+} );
+
+consoleModeTextDiv.addEventListener( 'click', ( event ) => {
+	consoleSetMode('text');
+} );
+
+function consoleSetMode( mode ) {
+
+	if ( ( consoleMode = mode ) === "text" ) {
+
+		consoleModeBinaryDiv.classList.remove('active');
+		consoleModeTextDiv.classList.add('active');
+
+		consoleBinaryDiv.classList.remove('active');
+		consoleTextDiv.classList.add('active');
+
+	} else {
+
+		consoleModeBinaryDiv.classList.add('active');
+		consoleModeTextDiv.classList.remove('active');
+
+		consoleBinaryDiv.classList.add('active');
+		consoleTextDiv.classList.remove('active');
+
+	}
+
+}
 
 function consolePush( bytes ) {
 
@@ -213,6 +247,8 @@ function consoleSend() {
 ipcRenderer.on( 'console-push', ( event, bytes ) => {
 	consolePush( bytes );
 } );
+
+consoleSetMode('text');
 
 // Packet
 const packetDiv = document.querySelector('div.packet');
