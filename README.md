@@ -1,5 +1,5 @@
-# Debug sensor
-Debug sensor is an electron application that use NodeJS (server-based javascript).
+# Debug Sensor
+Debug sensor is an electron application that use Node.js (server-based javascript).
 
 [![GitHub release](https://img.shields.io/github/release/mindstorm38/debug-sensor.svg)](https://github.com/mindstorm38/debug-sensor/releases)
 [![Github All Releases](https://img.shields.io/github/downloads/mindstorm38/debug-sensor/total.svg)](https://github.com/mindstorm38/debug-sensor/releases)
@@ -60,7 +60,7 @@ A packet is composed of segments, each segment has :
 * An identifier to help you find it easily
 
 To add a segment, just click on the `+` square, this will add a segment with a default type to `Unsigned Byte`.
-Then a segment configuration panel open with multiple fields and buttons : the first text field is its identifier, the second drop-down menu is for selecting its type, "Remove" button to remove the segment and the last "x" button to close the segment configuration panel.
+Then a segment configuration panel open with multiple fields and buttons : the first text field is its identifier, the second drop-down menu is for selecting its type, `Remove` button to remove the segment and the last `x` button to close the segment configuration panel.
 
 The number displayed at the bottom of the segment's square is the last value collected during the curernt session.
 
@@ -71,7 +71,7 @@ To connect to your serial port, you must already have it installed on your compu
 > Note : Be careful to configure the pattern of your packet before connecting, otherwise you will not receive data, which is normal behavior.
 
 #### Real-time graph
-The real-time graph is displayed in another window and can be accessed by clicking the "Show graph" button on the left side. I'm using the [plotly.js](https://plot.ly/javascript) javascript library.
+The real-time graph is displayed in another window and can be accessed by clicking the "Show graph" button on the left side. I'm using the [Plotly](https://plot.ly/javascript) javascript library.
 
 #### Console
 A console is available at the bottom of the right side, it can be useful if you want to collect text data from your sensor, or to send text commands.
@@ -97,4 +97,4 @@ Debug sensor is Apache-2.0 licensed
 
 Dependencies :
 - [plotly.js](https://github.com/plotly/plotly.js) : MIT License
-- [node-serialport](https://github.com/node-serialport/node-serialport) : MIT License
+- [serialport](https://github.com/node-serialport/node-serialport) : MIT License
