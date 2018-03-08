@@ -13,6 +13,10 @@ global.debugsensor = {
 	appdata: path.join( utils.getAppdataDir(), '.debugsensor' )
 };
 
+if ( !fs.existsSync( global.debugsensor.appdata ) ) {
+	fs.mkdirSync( global.debugsensor.appdata );
+}
+
 function start() {
 
 	let bitManager = require('./bit-manager');
@@ -97,6 +101,8 @@ function stop() {
 						return;
 
 					}
+
+					console.log( "CSV values file successfuly saved" );
 
 				} );
 

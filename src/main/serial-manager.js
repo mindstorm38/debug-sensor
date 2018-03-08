@@ -156,6 +156,7 @@ function connect( port, baudrate ) {
 
 	} );
 
+	/*
 	connectedPort.on( 'data', ( data ) => {
 
 		if ( buffer === null ) buffer = Buffer.from( data );
@@ -165,6 +166,9 @@ function connect( port, baudrate ) {
 		parseBuffer();
 
 	} );
+	*/
+
+	// connectedPort.on( 'readable', ()  );
 
 }
 
@@ -209,6 +213,29 @@ function valuesAdded( values ) {
 		}
 	}
 }
+
+function updateBuffer() {
+
+	if ( state !== 'connected' || connectedPort === null ) return;
+
+	let packet = packetManager.getCurrentPacket();
+	if ( packet === null ) return;
+
+	let newData = connectedPort.read();
+
+	if ( buffer === null ) buffer = Buffer.from( data );
+	else buffer = Buffer.concat( [ buffer, data ] );
+
+	let unreadBytes = [];
+	let minSize = packet.getSize();
+
+	let escape = false;
+
+
+
+}
+
+setInterval( updateBuffer, 100 );
 
 function parseBuffer() {
 
