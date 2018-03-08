@@ -223,20 +223,99 @@ function updateBuffer() {
 
 	let newData = connectedPort.read();
 
-	if ( buffer === null ) buffer = Buffer.from( data );
-	else buffer = Buffer.concat( [ buffer, data ] );
+	if ( newData !== null ) {
+
+		if ( buffer === null ) buffer = Buffer.from( newData );
+		else buffer = Buffer.concat( [ buffer, newData ] );
+
+	} else if ( buffer === null ) return;
 
 	let unreadBytes = [];
 	let minSize = packet.getSize();
+	let maxSize = minSize * 2; // Max size if all bytes are escaped
 
+	let packetDetected = false;
 	let escape = false;
 
+	while ( true ) {
 
+		let i = 0;
+
+		for ( ; i < buffer.length; i++ ) {
+
+			let b = buffer[ i ];
+
+			if ( !escape && b === packet.escape ) {
+				escape = true;
+				continue;
+			}
+
+			if ( !escape && b === packet.sof ) {
+				packetDetected = true;
+				break;
+			}
+
+			unreadBytes.push( b );
+
+			if ( escape ) escape = false;
+
+		}
+
+		buffer = buffer.slice( i );
+
+		if ( packetDetected && buffer.length >= ( minSize + 2 ) ) {
+
+			let target = Buffer.alloc( minSize ); // Packet data buffer
+			let targetIndex = 0;
+			let packetCompleted = false;
+			escape = false;
+
+			for ( let i = 0; i < buffer.length; i++ ) {
+
+				let b = buffer[ i ];
+
+				if ( !escape && b === packet.escape ) {
+					escape = true;
+					continue;
+				}
+
+				if ( !escape && b === packet.eof ) {
+
+					buffer = buffer.slice( i + 1 );
+					packetCompleted = true;
+					break;
+
+				}
+
+				target[ targetIndex ] = b;
+
+				targetIndex++;
+
+				if ( escape ) escape = false;
+
+			}
+
+			if ( packetCompleted && targetIndex !== minSize ) {
+
+				let values = packet.parseBuffer( target );
+
+				valuesAdded( values );
+
+			} else if ( buffer.length >= ( maxSize + 2 ) ) {
+				buffer = buffer.slice( maxSize + 2 );
+			}
+
+		} else break;
+
+	}
+
+	consolePush( unreadBytes );
 
 }
 
 setInterval( updateBuffer, 100 );
 
+/*
 function parseBuffer() {
 
 	if ( buffer === null ) return;
@@ -320,3 +399,4 @@ function parseBuffer() {
 	consolePush( unreadBytes );
 
 }
+*/

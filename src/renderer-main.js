@@ -215,7 +215,8 @@ function consolePush( bytes ) {
 	bytes.forEach( ( byte ) => {
 
 		let binaryByteSpan = document.createElement('span');
-		binaryByteSpan.textContent = byte.toString( 16 );
+		let byteString = byte.toString( 16 );
+		binaryByteSpan.textContent = ( ( byteString.length < 2 ? "0" : "" ) + byteString ).toUpperCase();
 		consoleBinaryDiv.appendChild( binaryByteSpan );
 
 		consoleTextContentDiv.textContent += String.fromCharCode( byte );
