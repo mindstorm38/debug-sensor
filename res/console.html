@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+
+		<meta charset="utf-8" />
+
+		<link rel="stylesheet" href="./main.css" />
+
+		<script type="application/javascript">
+			document.addEventListener( 'DOMContentLoaded', () => {
+				require('../src/renderer-console');
+			} );
+		</script>
+
+	</head>
+
+	<body class="console">
+
+		<div class="switch">
+
+			<div class="item" data-mode="binary">Binary</div>
+			<div class="item" data-mode="text">Text</div>
+
+		</div>
+
+		<div class="binary"></div>
+
+		<div class="text">
+
+			<div class="content"></div>
+
+			<div class="input">
+
+				<span>&gt</span>
+				<input type="text" />
+
+			</div>
+
+		</div>
+
+	</body>
+
+</html>

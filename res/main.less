@@ -183,6 +183,56 @@ select.select.disabled {
 	pointer-events: none;
 }
 
+// Switch
+div.switch {
+
+	display: block;
+	font-size: 0;
+
+	div.item {
+
+		display: inline-block;
+		padding: 0 10px;
+		background-color: #ffffff;
+		border-top: 1px solid @info-color;
+		border-bottom: 1px solid @info-color;
+		line-height: 30px;
+		height: 30px;
+		font-size: 13px;
+		font-family: sans-serif;
+		cursor: pointer;
+		color: @info-color;
+		transition: color .2s, background-color .2s;
+
+	}
+
+	div.item:last-child {
+		border-right: 1px solid @info-color;
+		border-top-right-radius: 2px;
+		border-bottom-right-radius: 2px;
+	}
+
+	div.item:first-child {
+		border-left: 1px solid @info-color;
+		border-top-left-radius: 2px;
+		border-bottom-left-radius: 2px;
+	}
+
+	div.item.active,
+	div.item:hover {
+
+		background-color: @info-color;
+		color: #ffffff;
+
+	}
+
+	div.item:active {
+		box-shadow: 0 0 0 3px fade( @info-color, 20% );
+		z-index: 1;
+	}
+
+}
+
 // Margin
 div.margin {
 
@@ -468,168 +518,6 @@ body.main {
 
 		}
 
-		// Console
-		div.console {
-
-			display: block;
-			position: relative;
-			flex-direction: row;
-			border-top: 1px solid @separator-color;
-			height: 200px;
-		    color: #4a4a4a;
-			font-family: monospace;
-
-			div.mode {
-
-				display: block;
-				position: absolute;
-				left: 20px;
-				top: -@console-mode-switch-height / 2;
-				font-family: sans-serif;
-				font-size: 0;
-				background-color: #ffffff;
-				border: 1px solid @info-color;
-				border-radius: 2px;
-
-				div.binary-mode,
-				div.text-mode {
-
-					display: inline-block;
-					height: @console-mode-switch-height - 2px;
-					font-size: 13px;
-					line-height: @console-mode-switch-height - 2px;
-					padding: 0 10px;
-					cursor: pointer;
-					color: @info-color;
-					background-color: transparent;
-					transition: background-color .2s, color .2s;
-
-				}
-
-				div.text-mode {
-					border-top-right-radius: 1px;
-					border-bottom-right-radius: 1px;
-				}
-
-				div.binary-mode {
-					border-top-left-radius: 1px;
-					border-bottom-left-radius: 1px;
-				}
-
-				div.binary-mode:hover,
-				div.binary-mode.active,
-				div.text-mode:hover,
-				div.text-mode.active {
-					color: #ffffff;
-					background-color: @info-color;
-				}
-
-				div.binary-mode:active,
-				div.text-mode:active {
-					box-shadow: 0 0 0 3px fade( @info-color, 20% );
-				}
-
-			}
-
-			div.binary,
-			div.text { height: 100%; }
-
-			div.binary {
-
-				display: none;
-				font-size: 0;
-				padding: 20px;
-				overflow: auto;
-
-				span {
-
-					display: inline-block;
-					font-size: 13px;
-					padding: 4px;
-					cursor: pointer;
-					background-color: transparent;
-					transition: background-color .2s, color .2s;
-
-				}
-
-				span:hover {
-
-					background-color: #f1f1f1;
-
-				}
-
-			}
-
-			div.binary.active { display: block; }
-
-			div.text {
-
-				display: none;
-				flex-direction: column;
-
-				div.content {
-
-					flex: 1 0 0;
-					padding: 20px;
-					font-size: 11px;
-					white-space: pre-wrap;
-					word-break: break-all;
-					overflow: auto;
-
-				}
-
-				div.input {
-
-					position: relative;
-					display: none;
-					flex-direction: row;
-					border-top: 1px solid @separator-color;
-					height: @console-input-height;
-					line-height: @console-input-height - 1px;
-
-					span {
-
-						display: block;
-						position: absolute;
-						width: @console-input-left-space;
-						height: 100%;
-						text-align: right;
-						font-size: 11px;
-						color: #7e7e7e;
-
-					}
-
-					input {
-
-						display: block;
-						width: 100%;
-						height: 100%;
-						padding-left: @console-input-left-space + 4px;
-						padding-right: 10px;
-						border: none;
-						background-color: #f5f5f5;
-					    color: #7c7c7c;
-						font-size: 13px;
-						font-family: inherit;
-						transition: background-color .2s, color .2s;
-
-					}
-
-					input:focus,
-					input:hover { background-color: #ffffff; }
-
-					input:focus { color: #343434; }
-
-				}
-
-				div.input.active { display: block; }
-
-			}
-
-			div.text.active { display: flex; }
-
-		}
-
 	}
 
 }
@@ -702,5 +590,142 @@ body.bit {
 body.graph {
 
 	padding: 20px;
+
+}
+
+// Console renderer
+body.console {
+
+	display: block;
+	position: relative;
+	flex-direction: row;
+	color: #4a4a4a;
+	font-family: monospace;
+	user-select: auto;
+
+	div.switch {
+
+		position: absolute;
+		left: 20px;
+		top: 20px;
+		opacity: .1;
+		transition: opacity .2s;
+
+	}
+
+	div.switch:hover {
+		opacity: 1;
+	}
+
+	div.switch::after {
+
+		content: '';
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		left: -20px;
+		top: -20px;
+		padding: 20px;
+		box-sizing: content-box;
+		z-index: -1;
+
+	}
+
+	div.binary,
+	div.text { height: 100%; }
+
+	div.binary {
+
+		display: none;
+		font-size: 0;
+		padding: 20px;
+		overflow: auto;
+
+		span {
+
+			display: inline-block;
+			font-size: 13px;
+			padding: 4px;
+			cursor: pointer;
+			background-color: transparent;
+			transition: background-color .2s, color .2s;
+
+		}
+
+		span:hover {
+
+			background-color: #f1f1f1;
+
+		}
+
+	}
+
+	div.binary.active { display: block; }
+
+	div.text {
+
+		display: none;
+		flex-direction: column;
+
+		div.content {
+
+			flex: 1 0 0;
+			padding: 20px;
+			font-size: 11px;
+			white-space: pre-wrap;
+			word-break: break-all;
+			overflow: auto;
+
+		}
+
+		div.input {
+
+			position: relative;
+			display: none;
+			flex-direction: row;
+			border-top: 1px solid @separator-color;
+			height: @console-input-height;
+			line-height: @console-input-height - 1px;
+
+			span {
+
+				display: block;
+				position: absolute;
+				width: @console-input-left-space;
+				height: 100%;
+				text-align: right;
+				font-size: 11px;
+				color: #7e7e7e;
+
+			}
+
+			input {
+
+				display: block;
+				width: 100%;
+				height: 100%;
+				padding-left: @console-input-left-space + 4px;
+				padding-right: 10px;
+				border: none;
+				background-color: #f5f5f5;
+				color: #7c7c7c;
+				font-size: 13px;
+				font-family: inherit;
+				transition: background-color .2s, color .2s;
+
+			}
+
+			input:focus,
+			input:hover { background-color: #ffffff; }
+
+			input:focus { color: #343434; }
+
+		}
+
+		div.input.active { display: block; }
+
+	}
+
+	div.text.active { display: flex; }
 
 }

@@ -110,7 +110,7 @@ function updateSerialElements() {
 			serialConnectButton.classList.remove('info');
 			serialConnectButton.classList.add('danger');
 
-			consoleTextInputDiv.classList.add('active');
+			// consoleTextInputDiv.classList.add('active');
 
 		} else {
 
@@ -121,7 +121,7 @@ function updateSerialElements() {
 			serialConnectButton.classList.add('info');
 			serialConnectButton.classList.remove('danger');
 
-			consoleTextInputDiv.classList.remove('active');
+			// consoleTextInputDiv.classList.remove('active');
 
 		}
 
@@ -161,95 +161,6 @@ ipcRenderer.on( 'serial-state', ( event, state ) => {
 	updateSerialElements();
 
 } );
-
-// Console
-const consoleDiv = document.querySelector('div.console');
-const consoleBinaryDiv = consoleDiv.querySelector('div.binary');
-const consoleTextDiv = consoleDiv.querySelector('div.text');
-const consoleTextContentDiv = consoleTextDiv.querySelector('div.content');
-const consoleTextInputDiv = consoleTextDiv.querySelector('div.input');
-const consoleTextInputInput = consoleTextInputDiv.querySelector('input');
-const consoleModeDiv = consoleDiv.querySelector('div.mode');
-const consoleModeBinaryDiv = consoleModeDiv.querySelector('div.binary-mode');
-const consoleModeTextDiv = consoleModeDiv.querySelector('div.text-mode');
-
-let consoleScrollLock = false;
-let consoleMode = 'text';
-
-consoleTextInputInput.addEventListener( 'keydown', ( event ) => {
-	if ( event.which === 13 ) consoleSend();
-} );
-
-consoleModeBinaryDiv.addEventListener( 'click', ( event ) => {
-	consoleSetMode('binary');
-} );
-
-consoleModeTextDiv.addEventListener( 'click', ( event ) => {
-	consoleSetMode('text');
-} );
-
-function consoleSetMode( mode ) {
-
-	if ( ( consoleMode = mode ) === "text" ) {
-
-		consoleModeBinaryDiv.classList.remove('active');
-		consoleModeTextDiv.classList.add('active');
-
-		consoleBinaryDiv.classList.remove('active');
-		consoleTextDiv.classList.add('active');
-
-	} else {
-
-		consoleModeBinaryDiv.classList.add('active');
-		consoleModeTextDiv.classList.remove('active');
-
-		consoleBinaryDiv.classList.add('active');
-		consoleTextDiv.classList.remove('active');
-
-	}
-
-}
-
-function consolePush( bytes ) {
-
-	bytes.forEach( ( byte ) => {
-
-		let binaryByteSpan = document.createElement('span');
-		let byteString = byte.toString( 16 );
-		binaryByteSpan.textContent = ( ( byteString.length < 2 ? "0" : "" ) + byteString ).toUpperCase();
-		consoleBinaryDiv.appendChild( binaryByteSpan );
-
-		consoleTextContentDiv.textContent += String.fromCharCode( byte );
-
-	} );
-
-	if ( !consoleScrollLock ) consoleTextContentDiv.scrollTop = consoleTextContentDiv.scrollHeight;
-
-}
-
-function consoleSend() {
-
-	let value = consoleTextInputInput.value + '\n'; // TODO: Add an option to add or not '\n'
-
-	// Converting text to bytes
-	let bytes = [];
-	for ( let i = 0; i < value.length; i++ ) {
-		bytes.push( value.charCodeAt( i ) );
-	}
-
-	// Resetting input
-	consoleTextInputInput.value = "";
-
-	// Send to main process
-	ipcRenderer.send( 'console-send', bytes );
-
-}
-
-ipcRenderer.on( 'console-push', ( event, bytes ) => {
-	consolePush( bytes );
-} );
-
-consoleSetMode('text');
 
 // Packet
 const packetDiv = document.querySelector('div.packet');
@@ -582,11 +493,14 @@ ipcRenderer.on( 'packet-segment-data-types-list', ( event, types ) => {
 // Readers
 const readerDiv = document.querySelector('div.reader');
 const readerGraphButton = readerDiv.querySelector('button#reader-graph');
+const readerConsoleButton = readerDiv.querySelector('button#reader-console');
 
 readerGraphButton.addEventListener( 'click', () => {
-
 	ipcRenderer.send( 'reader-graph-visible-toggle' );
+} );
 
+readerConsoleButton.addEventListener( 'click', () => {
+	ipcRenderer.send( 'reader-console-visible-toggle' );
 } );
 
 function setReaderGraphVisible( visible ) {
@@ -607,8 +521,30 @@ function setReaderGraphVisible( visible ) {
 
 }
 
+function setReaderConsoleVisible( visible ) {
+
+	if ( visible ) {
+
+		readerConsoleButton.textContent = 'Hide console';
+		readerConsoleButton.classList.remove('info');
+		readerConsoleButton.classList.add('danger');
+
+	} else {
+
+		readerConsoleButton.textContent = 'Show console';
+		readerConsoleButton.classList.add('info');
+		readerConsoleButton.classList.remove('danger');
+
+	}
+
+}
+
 ipcRenderer.on( 'reader-graph-visible', ( event, visible ) => {
 	setReaderGraphVisible( visible );
+} );
+
+ipcRenderer.on( 'reader-console-visible', ( event, visible ) => {
+	setReaderConsoleVisible( visible );
 } );
 
 // Reload ( F5 °116 ) and dev tools ( F12 °123 )

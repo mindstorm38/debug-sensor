@@ -21,12 +21,14 @@ function start() {
 
 	let bitManager = require('./bit-manager');
 	let graphManager = require('./graph-manager');
+	let consoleManager = require('./console-manager');
 
 	require('./renderer-connector');
 	require('./serial-manager').init();
 	require('./packet-manager').init();
 	bitManager.init();
 	graphManager.init();
+	consoleManager.init();
 
 	require('./config-manager').load();
 
@@ -34,6 +36,7 @@ function start() {
 
 	bitManager.win.init();
 	graphManager.win.init();
+	consoleManager.win.init();
 
 }
 

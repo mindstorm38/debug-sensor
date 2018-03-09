@@ -11,6 +11,7 @@ const INITIAL_BAUDRATE = 115200;
 
 let rendererMain = null;
 let rendererGraph = null;
+let rendererConsole = null;
 
 let currentSerialPorts = [];
 let updateIntervalId = null;
@@ -43,6 +44,12 @@ rendererConnector.registerRendererInit( 'main', ( ipc ) => {
 rendererConnector.registerRendererInit( 'graph', ( ipc ) => {
 
 	rendererGraph = ipc;
+
+} );
+
+rendererConnector.registerRendererInit( 'console', ( ipc ) => {
+
+	rendererConsole = ipc;
 
 } );
 
@@ -156,20 +163,6 @@ function connect( port, baudrate ) {
 
 	} );
 
-	/*
-	connectedPort.on( 'data', ( data ) => {
-
-		if ( buffer === null ) buffer = Buffer.from( data );
-		else buffer = Buffer.concat( [ buffer, data ] );
-
-		// consolePush( data );
-		parseBuffer();
-
-	} );
-	*/
-
-	// connectedPort.on( 'readable', ()  );
-
 }
 
 function disconnect() {
@@ -197,7 +190,7 @@ ipcMain.on( 'console-send', ( event, bytes ) => {
 
 function consolePush( bytes ) {
 	if ( bytes.length === 0 ) return;
-	if ( rendererMain !== null ) rendererMain.send( 'console-push', bytes );
+	if ( rendererConsole !== null ) rendererConsole.send( 'console-push', bytes );
 }
 
 function consoleSend( bytes ) {
@@ -228,7 +221,7 @@ function updateBuffer() {
 		if ( buffer === null ) buffer = Buffer.from( newData );
 		else buffer = Buffer.concat( [ buffer, newData ] );
 
-	} else if ( buffer === null ) return;
+	} else return; // Stop this funcion if no new data
 
 	let unreadBytes = [];
 	let minSize = packet.getSize();
@@ -237,166 +230,76 @@ function updateBuffer() {
 	let packetDetected = false;
 	let escape = false;
 
-	while ( true ) {
+	let target = Buffer.alloc( minSize );
+	let targetIndex = 0;
 
-		let i = 0;
+	let sliceIndex = 0;
 
-		for ( ; i < buffer.length; i++ ) {
+	for ( let i = 0; i < buffer.length; i++ ) {
 
-			let b = buffer[ i ];
+		let b = buffer[ i ];
 
-			if ( !escape && b === packet.escape ) {
-				escape = true;
-				continue;
-			}
+		if ( !escape && b === packet.escape ) {
 
-			if ( !escape && b === packet.sof ) {
-				packetDetected = true;
-				break;
-			}
-
-			unreadBytes.push( b );
-
-			if ( escape ) escape = false;
+			escape = true;
+			continue;
 
 		}
 
-		buffer = buffer.slice( i );
+		if ( packetDetected ) {
 
-		if ( packetDetected && buffer.length >= ( minSize + 2 ) ) {
+			if ( !escape && b === packet.eof ) {
 
-			let target = Buffer.alloc( minSize ); // Packet data buffer
-			let targetIndex = 0;
-			let packetCompleted = false;
-			escape = false;
+				packetDetected = false;
 
-			for ( let i = 0; i < buffer.length; i++ ) {
+				sliceIndex = i + 1;
 
-				let b = buffer[ i ];
+				if ( targetIndex === minSize ) {
 
-				if ( !escape && b === packet.escape ) {
-					escape = true;
+					let values = packet.parseBuffer( target );
+
+					valuesAdded( values );
+
+				} else if ( packet.sof === packet.eof ) { // If SOF and EOF are same, then slice buffer to the EOF (and not to the byte after the EOF) to be sure that isn't a SOF
+
+					sliceIndex--;
+					i--; // Re-loop exact same byte
 					continue;
-				}
-
-				if ( !escape && b === packet.eof ) {
-
-					buffer = buffer.slice( i + 1 );
-					packetCompleted = true;
-					break;
 
 				}
+
+			} else {
 
 				target[ targetIndex ] = b;
-
 				targetIndex++;
 
-				if ( escape ) escape = false;
+			}
+
+		} else {
+
+			if ( !escape && b === packet.sof ) {
+
+				packetDetected = true;
+				targetIndex = 0;
+
+			} else {
+
+				unreadBytes.push( b );
 
 			}
 
-			if ( packetCompleted && targetIndex !== minSize ) {
+			sliceIndex = i;
 
-				let values = packet.parseBuffer( target );
+		}
 
-				valuesAdded( values );
-
-			} else if ( buffer.length >= ( maxSize + 2 ) ) {
-				buffer = buffer.slice( maxSize + 2 );
-			}
-
-		} else break;
+		if ( escape ) escape = false;
 
 	}
+
+	if ( sliceIndex !== 0 ) buffer = buffer.slice( sliceIndex );
 
 	consolePush( unreadBytes );
 
 }
 
 setInterval( updateBuffer, 100 );
-
-/*
-function parseBuffer() {
-
-	if ( buffer === null ) return;
-
-	let packet = packetManager.getCurrentPacket();
-
-	if ( packet === null ) return;
-
-	let unreadBytes = [];
-
-	let minSize = packet.getSize();
-
-	while ( buffer.length >= ( minSize + 2 ) ) { // +2 for SOF or EOF
-
-		// let maxSize = minSize * 2;
-
-		let escape = false;
-
-		for ( let i = 0; i < buffer.length; i++ ) {
-
-			let b = buffer[ i ];
-
-			if ( !escape && b === packet.escape ) {
-				escape = true;
-				continue;
-			}
-
-			if ( !escape && b === packet.sof ) {
-
-				buffer = buffer.slice( i + 1 );
-				break;
-
-			}
-
-			unreadBytes.push( b );
-
-			if ( escape ) escape = false;
-
-		}
-
-		if ( buffer.length < ( minSize + 1 ) ) break; // +1 for EOF, SOF has been sliced
-
-		let target = Buffer.alloc( minSize ); // Packet data buffer
-		let targetIndex = 0;
-		escape = false;
-
-		for ( let i = 0; i < buffer.length; i++ ) {
-
-			let b = buffer[ i ];
-
-			if ( !escape && b === packet.escape ) {
-				escape = true;
-				continue;
-			}
-
-			if ( !escape && b === packet.eof ) {
-
-				buffer = buffer.slice( i + 1 );
-				break;
-
-			}
-
-			target[ targetIndex ] = b;
-
-			targetIndex++;
-
-			if ( escape ) {
-				escape = false;
-			}
-
-		}
-
-		if ( targetIndex !== minSize ) break; // Stop read if target not fully filled
-
-		let values = packet.parseBuffer( target );
-
-		valuesAdded( values );
-
-	}
-
-	consolePush( unreadBytes );
-
-}
-*/
