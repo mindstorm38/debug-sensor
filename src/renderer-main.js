@@ -110,8 +110,6 @@ function updateSerialElements() {
 			serialConnectButton.classList.remove('info');
 			serialConnectButton.classList.add('danger');
 
-			// consoleTextInputDiv.classList.add('active');
-
 		} else {
 
 			serialBaudrateSelect.classList.remove('disabled');
@@ -120,8 +118,6 @@ function updateSerialElements() {
 
 			serialConnectButton.classList.add('info');
 			serialConnectButton.classList.remove('danger');
-
-			// consoleTextInputDiv.classList.remove('active');
 
 		}
 

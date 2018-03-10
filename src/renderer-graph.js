@@ -2,7 +2,7 @@
 const { ipcRenderer, remote } = require('electron');
 const utils = require('./utils');
 
-const MAX_POINTS = 3000;
+const MAX_POINTS = 1500;
 
 const graphDiv = document.querySelector('div#graph');
 

@@ -58,6 +58,8 @@ function consoleSetMode( mode ) {
 
 function consolePush( bytes ) {
 
+	let string = "";
+
 	bytes.forEach( ( byte ) => {
 
 		let binaryByteSpan = document.createElement('span');
@@ -65,17 +67,32 @@ function consolePush( bytes ) {
 		binaryByteSpan.textContent = ( ( byteString.length < 2 ? "0" : "" ) + byteString ).toUpperCase();
 		consoleBinaryDiv.appendChild( binaryByteSpan );
 
-		consoleTextContentDiv.textContent += String.fromCharCode( byte );
+		string += String.fromCharCode( byte );
 
 	} );
 
+	consoleAppendText( string, false );
+
 	if ( !consoleScrollLock ) consoleTextContentDiv.scrollTop = consoleTextContentDiv.scrollHeight;
+
+}
+
+function consoleAppendText( string, sent = false ) {
+
+	let textNode = sent ? document.createElement('span') : document.createTextNode( string );
+	if ( sent ) {
+		textNode.classList.add('sent');
+		textNode.textContent = string;
+	}
+	consoleTextContentDiv.appendChild( textNode );
 
 }
 
 function consoleSend() {
 
 	let value = consoleTextInputInput.value + '\n'; // TODO: Add an option to add or not '\n'
+
+	consoleAppendText( value, true );
 
 	// Converting text to bytes
 	let bytes = [];
@@ -91,8 +108,18 @@ function consoleSend() {
 
 }
 
+function consoleSetCanSend( canSend ) {
+
+	consoleTextInputDiv.classList[ canSend ? "add" : "remove" ]('active');
+
+}
+
 ipcRenderer.on( 'console-push', ( event, bytes ) => {
 	consolePush( bytes );
+} );
+
+ipcRenderer.on( 'console-can-send', ( event, canSend ) => {
+	consoleSetCanSend( canSend );
 } );
 
 consoleSetMode('text');

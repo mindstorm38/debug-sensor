@@ -121,15 +121,20 @@ function setState( newState ) {
 }
 
 function sendState( ipc ) {
-	if ( rendererMain === null ) return;
-	rendererMain.send( 'serial-state', state );
+	if ( rendererMain !== null ) rendererMain.send( 'serial-state', state );
+	if ( rendererConsole !== null ) rendererConsole.send( 'console-can-send', ( state === 'connected' ) );
 }
 
 function connect( port, baudrate ) {
 
 	if ( state === 'connected' ) return;
 
-	if ( BAUDRATES.indexOf( baudrate ) === -1 ) initAvailablesBaudrates();
+	if ( BAUDRATES.indexOf( baudrate ) === -1 ) {
+
+		initAvailablesBaudrates();
+		baudrate = INITIAL_BAUDRATE;
+
+	}
 
 	connectedPort = new SerialPort( port, {
 		baudRate: baudrate
@@ -281,14 +286,14 @@ function updateBuffer() {
 
 				packetDetected = true;
 				targetIndex = 0;
+				sliceIndex = i; // I think this line is useless
 
 			} else {
 
 				unreadBytes.push( b );
+				sliceIndex = i + 1;
 
 			}
-
-			sliceIndex = i;
 
 		}
 
