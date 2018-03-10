@@ -1,5 +1,5 @@
-# Debug sensor
-Debug sensor is an electron application that use NodeJS (server-based javascript).
+# Debug Sensor
+Debug sensor is an electron application that use Node.js (server-based javascript).
 
 [![GitHub release](https://img.shields.io/github/release/mindstorm38/debug-sensor.svg)](https://github.com/mindstorm38/debug-sensor/releases)
 [![Github All Releases](https://img.shields.io/github/downloads/mindstorm38/debug-sensor/total.svg)](https://github.com/mindstorm38/debug-sensor/releases)
@@ -19,7 +19,7 @@ Debug sensor let you to communicate with a serial port and retrieve customisable
   * [Console](#console)
 * [Issues](#issues)
 * [Sensors codes examples](#sensors-codes-examples)
-* [License](#license)
+* [Licenses](#licenses)
 
 ---------
 
@@ -34,7 +34,7 @@ If you want to install this application there is two options :
 - Clone or download this repository, and install yourselves all dependencies and launch it with `start.bat` windows script or `npm start` command.
 - Download pre-packaged releases zip file for your platform, extract the zip in a folder named, for example "debug-sensor" and then run the executable file `debug-sensor.exe`.
 
-> Important note : Linux and Mac platforms currently not supported (please refer to [Platform Support](#platform-support)).
+> **Important note** : Linux and Mac platforms currently not supported (please refer to [Platform Support](#platform-support)).
 
 ---------
 
@@ -48,7 +48,7 @@ The first thing to do is to configure the packet pattern, that's the way the dat
 
 Packets are delimited by `sof` (start-of-frame), `eof` (end-of-frame) and an `escape` byte, the software only recognise packets with valid delimiters en escape.
 
-> Important note :  Delimiters and escapes bytes are not currently configurable and their default values are : `sof` and `eof` is `0x7E` and `escape` is `0x7D`
+> **Important note** :  Delimiters and escapes bytes are not currently configurable and their default values are : `sof` and `eof` is `0x7E` and `escape` is `0x7D`
 
 A packet is composed of segments, each segment has :
 * A type, it defines the size and the way the bytes will be read. List of current types :
@@ -60,7 +60,7 @@ A packet is composed of segments, each segment has :
 * An identifier to help you find it easily
 
 To add a segment, just click on the `+` square, this will add a segment with a default type to `Unsigned Byte`.
-Then a segment configuration panel open with multiple fields and buttons : the first text field is its identifier, the second drop-down menu is for selecting its type, "Remove" button to remove the segment and the last "x" button to close the segment configuration panel.
+Then a segment configuration panel open with multiple fields and buttons : the first text field is its identifier, the second drop-down menu is for selecting its type, `Remove` button to remove the segment and the last `x` button to close the segment configuration panel.
 
 The number displayed at the bottom of the segment's square is the last value collected during the curernt session.
 
@@ -71,7 +71,7 @@ To connect to your serial port, you must already have it installed on your compu
 > Note : Be careful to configure the pattern of your packet before connecting, otherwise you will not receive data, which is normal behavior.
 
 #### Real-time graph
-The real-time graph is displayed in another window and can be accessed by clicking the "Show graph" button on the left side.
+The real-time graph is displayed in another window and can be accessed by clicking the "Show graph" button on the left side. I'm using the [Plotly](https://plot.ly/javascript) javascript library.
 
 #### Console
 A console is available at the bottom of the right side, it can be useful if you want to collect text data from your sensor, or to send text commands.
@@ -92,5 +92,9 @@ You can repport issues here : [Github Issues](https://github.com/mindstorm38/deb
 
 ---------
 
-### License
+### Licenses
 Debug sensor is Apache-2.0 licensed
+
+Dependencies :
+- [plotly.js](https://github.com/plotly/plotly.js) : MIT License
+- [serialport](https://github.com/node-serialport/node-serialport) : MIT License
